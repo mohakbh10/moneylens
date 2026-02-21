@@ -31,7 +31,9 @@ export default function UploadsPage() {
     };
 
     useEffect(() => {
-        fetchUploads();
+        (async () => {
+            await fetchUploads();
+        })();
     }, []);
 
     const handleUpload = async () => {
