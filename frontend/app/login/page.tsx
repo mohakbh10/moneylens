@@ -11,6 +11,9 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePassword = () => setShowPassword((prev) => !prev);
 
     const handleLogin = async () => {
         const { error } = await supabase.auth.signInWithPassword({
@@ -48,11 +51,20 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             />
 
+            <div className="relative">
             <Input
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
             />
+            <button
+                type="button"
+                onClick={togglePassword}
+                className="absolute inset-y-0 right-3 flex items-center text-sm text-slate-500"
+            >
+                {showPassword ? "Hide" : "Show"}
+            </button>
+            </div>
 
             <Button className="w-full" onClick={handleLogin}>
             Login
