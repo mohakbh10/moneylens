@@ -2,18 +2,19 @@ from fastapi import FastAPI
 
 from services.supabase_client import supabase
 
-from routes.extract_route import (
-    router as extract_router
+from routes.process_route import (
+    router as process_router
 )
-from routes.transaction_route import (
-    router as transaction_router
+from routes.dashboard_route import (
+    router as dashboard_router
 )
 
 app = FastAPI()
 
 app.include_router(
-    extract_router
+    process_router
 )
+
 app.include_router(
-    transaction_router
+    dashboard_router
 )

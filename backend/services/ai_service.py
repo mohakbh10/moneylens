@@ -1,4 +1,5 @@
 import json
+from urllib import response
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
@@ -77,7 +78,65 @@ Statement:
 
     if cleaned.endswith("```"):
         cleaned = cleaned[:-3]
+
     print(response.text)
+
+    return json.loads(
+        cleaned.strip()
+    )
+
+def categorize_transactions(
+    transactions
+):
+
+    prompt = f"""
+You are a financial transaction categorizer.
+
+Possible categories:
+
+- Food
+- Transport
+- Shopping
+- Bills
+- Education
+- Entertainment
+- Income
+- Transfer
+- Other
+
+Return ONLY JSON.
+
+Format:
+
+[
+    {{
+        "id":"transaction_id",
+        "category":"Food"
+    }}
+]
+
+Transactions:
+
+{transactions}
+"""
+
+    response = model.generate_content(
+        prompt
+    )
+
+    cleaned = response.text.strip()
+
+    if cleaned.startswith("```json"):
+        cleaned = cleaned.replace(
+            "```json",
+            ""
+        )
+
+    if cleaned.endswith("```"):
+        cleaned = cleaned[:-3]
+
+    print(response.text)
+
     return json.loads(
         cleaned.strip()
     )
