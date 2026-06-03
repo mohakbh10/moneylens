@@ -54,3 +54,28 @@ def download_pdf(file_path: str):
 
     return response #returns bytes of the file to extract_text function
 """
+def get_raw_text(upload_id: str):
+
+    response = (
+        supabase
+        .table("uploads")
+        .select("raw_text")
+        .eq("id", upload_id)
+        .single()
+        .execute()
+    )
+
+    return response.data["raw_text"]
+
+def insert_transactions(
+    transactions: list
+):
+
+    response = (
+        supabase
+        .table("transactions")
+        .insert(transactions)
+        .execute()
+    )
+
+    return response.data
