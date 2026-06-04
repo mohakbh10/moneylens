@@ -56,8 +56,6 @@ backend/**/*.pyd
 # ======================
 # UPLOADS / GENERATED FILES
 # ======================
-
-uploads/
 temp/
 tmp/
 
