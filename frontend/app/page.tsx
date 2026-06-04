@@ -1,13 +1,29 @@
-import {supabase} from "@/lib/supabase";
+"use client";
+
+import { useEffect } from "react";
+import { getUploads } from "@/lib/api";
+
 export default function Home() {
-  console.log(supabase);
+
+  useEffect(() => {
+
+    async function load() {
+
+      const uploads =
+        await getUploads();
+
+      console.log(
+        uploads
+      );
+    }
+
+    load();
+
+  }, []);
 
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">MoneyLens</h1>
-      <p className="text-muted-foreground mt-2">
-        See where your money really goes.
-      </p>
-    </main>
+    <div>
+      MoneyLens
+    </div>
   );
 }
