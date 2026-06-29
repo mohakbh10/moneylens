@@ -44,3 +44,22 @@ export async function processStatement(
  * It takes an uploadId as a parameter and returns the processed statement data.
  * which api endpoint: /process-statement
  */
+export async function getInsights(
+    uploadId: string
+) {
+    const response = await fetch(
+        `${API_URL}/insights/${uploadId}`
+    );
+
+    return await response.json();
+}
+
+export async function getTransactions(
+    uploadId: string
+) {
+    const response = await fetch(
+        `${API_URL}/transactions/${uploadId}`
+    );
+
+    return await response.json();
+}
