@@ -16,6 +16,7 @@ import {
 } from "@/lib/api";
 
 import { formatCurrency } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 type Insight = {
     total_income: number;
@@ -37,6 +38,15 @@ type Transaction = {
 };
 
 export default function InsightsPage() {
+    const categoryColors: Record<string, string> = {
+        Food: "bg-orange-100 text-orange-700",
+        Shopping: "bg-pink-100 text-pink-700",
+        Transport: "bg-blue-100 text-blue-700",
+        Bills: "bg-yellow-100 text-yellow-700",
+        Entertainment: "bg-purple-100 text-purple-700",
+        Income: "bg-green-100 text-green-700",
+    };
+    
 
     const { id } = useParams();
 
@@ -48,7 +58,9 @@ export default function InsightsPage() {
 
     const [loading, setLoading] =
         useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
 
+    const rowsPerPage = 5;
     // =========================
     // Load insight + transactions
     // =========================
@@ -129,7 +141,18 @@ export default function InsightsPage() {
         );
 
     }
+    const totalPages = Math.ceil(
+        transactions.length / rowsPerPage
+    );
 
+    const startIndex =
+        (currentPage - 1) * rowsPerPage;
+
+    const currentTransactions =
+        transactions.slice(
+            startIndex,
+            startIndex + rowsPerPage
+        );
     return (
 
         <div className="max-w-6xl mx-auto px-6 py-10">
@@ -335,12 +358,162 @@ export default function InsightsPage() {
                 </div>
 
             </div>
+            {/* ================= Transactions ================= */}
 
-            {/* ========================= */}
-            {/* Transactions */}
-            {/* We'll build this next */}
-            {/* ========================= */}
+            <div className="mt-10">
 
+                <h2 className="text-2xl font-semibold mb-5">
+                    Recent Transactions
+                </h2>
+
+                <div className="max-h-105 overflow-y-auto border rounded-2xl bg-card">
+                    {transactions.length === 0 ? (
+                    <div className="p-12 text-center text-muted-foreground">
+                        No transactions found.
+                    </div>
+                    ) : (
+                            <table className="w-full">
+
+                                <thead className="sticky top-0 bg-muted z-10">
+
+                                    <tr className="text-left">
+
+                                        <th className="px-5 py-4 text-sm">
+                                            Date
+                                        </th>
+
+                                        <th className="px-5 py-4 text-sm">
+                                            Description
+                                        </th>
+
+                                        <th className="px-5 py-4 text-sm">
+                                            Category
+                                        </th>
+
+                                        <th className="px-5 py-4 text-right text-sm">
+                                            Amount
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    {currentTransactions.map((transaction) => (
+
+                                        <tr
+                                            key={transaction.id}
+                                            className="border-t hover:bg-muted/30 transition-colors duration-200"
+                                        >
+
+                                            <td className="px-5 py-4 max-w-xs truncate">
+
+                                                {new Date(
+                                                    transaction.transaction_date
+                                                ).toLocaleDateString()}
+
+                                            </td>
+
+                                            <td className="px-5 py-4">
+
+                                                {transaction.description}
+
+                                            </td>
+
+                                            <td className="px-5 py-4">
+                                                <span
+                                                    className={`
+                                                        rounded-full
+                                                        px-3
+                                                        py-1
+                                                        text-xs
+                                                        font-medium
+                                                        ${
+                                                            categoryColors[transaction.category]
+                                                            ??
+                                                            "bg-muted text-muted-foreground"
+                                                        }
+                                                    `}
+                                                >
+                                                    {transaction.category}
+                                                </span>
+
+                                            </td>
+
+                                            <td
+                                                className={`px-5 py-4 text-right font-semibold ${
+                                                    transaction.transaction_type === "DEBIT"
+                                                        ? "text-red-500"
+                                                        : "text-green-600"
+                                                }`}
+                                            >
+
+                                                {transaction.transaction_type === "DEBIT"
+                                                    ? "-"
+                                                    : "+"}
+
+                                                {formatCurrency(
+                                                    transaction.amount
+                                                )}
+
+                                            </td>
+
+                                        </tr>
+
+                                    ))}
+
+                                </tbody>
+                            </table>
+                            
+                    )}           
+                    <div className="flex items-center justify-between px-5 py-4 border-t">
+                        <p className="text-sm text-muted-foreground">
+
+                            Showing {startIndex + 1}–
+                            {Math.min(
+                                startIndex + rowsPerPage,
+                                transactions.length
+                            )} of {transactions.length}
+
+                        </p>
+
+                        <div className="flex items-center gap-2">
+
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={currentPage === 1}
+                                onClick={() =>
+                                    setCurrentPage(currentPage - 1)
+                                }
+                            >
+                                Previous
+                            </Button>
+
+                            <span className="text-sm">
+
+                                Page {currentPage} of {totalPages}
+
+                            </span>
+
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={currentPage === totalPages}
+                                onClick={() =>
+                                    setCurrentPage(currentPage + 1)
+                                }
+                            >
+                                Next
+                            </Button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     );
