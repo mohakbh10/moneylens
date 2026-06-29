@@ -36,18 +36,17 @@ type Transaction = {
     transaction_type: string;
     category: string;
 };
-
-export default function InsightsPage() {
-    const categoryColors: Record<string, string> = {
+const categoryColors = {
         Food: "bg-orange-100 text-orange-700",
         Shopping: "bg-pink-100 text-pink-700",
         Transport: "bg-blue-100 text-blue-700",
         Bills: "bg-yellow-100 text-yellow-700",
         Entertainment: "bg-purple-100 text-purple-700",
         Income: "bg-green-100 text-green-700",
+        Transfer: "bg-sky-100 text-sky-700",
+        Education: "bg-indigo-100 text-indigo-700",
     };
-    
-
+export default function InsightsPage() {
     const { id } = useParams();
 
     const [insight, setInsight] =
@@ -366,7 +365,7 @@ export default function InsightsPage() {
                     Recent Transactions
                 </h2>
 
-                <div className="max-h-105 overflow-y-auto border rounded-2xl bg-card">
+                <div className="border rounded-2xl bg-card overflow-hidden">
                     {transactions.length === 0 ? (
                     <div className="p-12 text-center text-muted-foreground">
                         No transactions found.
@@ -415,7 +414,7 @@ export default function InsightsPage() {
 
                                             </td>
 
-                                            <td className="px-5 py-4">
+                                            <td className="px-5 py-4 max-w-sm truncate">
 
                                                 {transaction.description}
 
@@ -443,13 +442,13 @@ export default function InsightsPage() {
 
                                             <td
                                                 className={`px-5 py-4 text-right font-semibold ${
-                                                    transaction.transaction_type === "DEBIT"
+                                                    transaction.transaction_type === "debit"
                                                         ? "text-red-500"
                                                         : "text-green-600"
                                                 }`}
                                             >
 
-                                                {transaction.transaction_type === "DEBIT"
+                                                {transaction.transaction_type === "debit"
                                                     ? "-"
                                                     : "+"}
 
@@ -484,9 +483,13 @@ export default function InsightsPage() {
                                 variant="outline"
                                 size="sm"
                                 disabled={currentPage === 1}
-                                onClick={() =>
-                                    setCurrentPage(currentPage - 1)
-                                }
+                                onClick={() => {
+                                    setCurrentPage(currentPage - 1);
+                                    window.scrollTo({
+                                        top: 650,
+                                        behavior: "smooth",
+                                    });
+                                }}
                             >
                                 Previous
                             </Button>
@@ -501,9 +504,13 @@ export default function InsightsPage() {
                                 variant="outline"
                                 size="sm"
                                 disabled={currentPage === totalPages}
-                                onClick={() =>
-                                    setCurrentPage(currentPage + 1)
-                                }
+                                onClick={() => {
+                                    setCurrentPage(currentPage + 1);
+                                    window.scrollTo({
+                                        top: 650,
+                                        behavior: "smooth",
+                                    });
+                                }}
                             >
                                 Next
                             </Button>
