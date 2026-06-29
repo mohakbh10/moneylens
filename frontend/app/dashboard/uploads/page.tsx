@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUploads } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
+import {
+    getUploads,
+    processStatement,
+} from "@/lib/api";
+
+import { useRouter } from "next/navigation";
 
 type Upload = {
     id: string;
@@ -15,6 +20,8 @@ export default function UploadsPage() {
     const [file, setFile] = useState<File | null>(null);
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState("");
+    const router = useRouter();
 
     const fetchUploads = async () => {
         try {
@@ -26,12 +33,7 @@ export default function UploadsPage() {
     };
 
     useEffect(() => {
-        const load = async () => {
-            const data = await getUploads();
-            setUploads(data);
-        };
-
-        load();
+        fetchUploads();
     }, []);
 
     const handleUpload = async () => {
@@ -41,6 +43,7 @@ export default function UploadsPage() {
         }
 
         setLoading(true);
+        setStatus("Uploading statement...");
 
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -63,13 +66,20 @@ export default function UploadsPage() {
             return;
         }
 
-        const { error: dbError } = await supabase
+        const {
+            data: upload,
+            error: dbError,
+        } = await supabase
             .from("uploads")
-            .insert([{
-                user_id: user.id,
-                file_name: file.name,
-                file_url: filePath,
-            }]);
+            .insert([
+                {
+                    user_id: user.id,
+                    file_name: file.name,
+                    file_url: filePath,
+                },
+            ])
+            .select()
+            .single();
 
         if (dbError) {
             console.error(dbError);
@@ -78,10 +88,43 @@ export default function UploadsPage() {
             return;
         }
 
-        setFile(null);
-        await fetchUploads();
-        alert("Upload successful!");
-        setLoading(false);
+        setStatus(
+            "Extracting transactions..."
+        );
+
+        try {
+
+            await processStatement(
+                upload.id
+            );
+
+            setStatus(
+                "Analysis complete!"
+            );
+
+            setFile(null);
+
+            await fetchUploads();
+
+            router.push(
+                `/dashboard/insights/${upload.id}`
+            );
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Failed to process statement."
+            );
+
+        }
+        finally {
+
+            setLoading(false);
+            setStatus("");
+        }
     };
 
     return (
@@ -133,8 +176,13 @@ export default function UploadsPage() {
                     disabled={loading || !file}
                     className="w-full mt-2"
                 >
-                    {loading ? "Uploading..." : "Upload Statement"}
+                    {loading ? "Processing..." : "Upload Statement"}
                 </Button>
+                {loading && (
+                    <p className="mt-4 text-sm text-center text-muted-foreground">
+                        {status}
+                    </p>
+                )}
             </div>
 
             {/* Recent Uploads */}
