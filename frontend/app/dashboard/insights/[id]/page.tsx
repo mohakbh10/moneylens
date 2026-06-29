@@ -152,6 +152,7 @@ export default function InsightsPage() {
             startIndex,
             startIndex + rowsPerPage
         );
+    const emptyRows = rowsPerPage - currentTransactions.length;
     return (
 
         <div className="max-w-6xl mx-auto px-6 py-10">
@@ -461,12 +462,22 @@ export default function InsightsPage() {
                                         </tr>
 
                                     ))}
+                                    {/* Empty rows to maintain table height */}
+                                        {Array.from({ length: emptyRows }).map((_, index) => (
+                                            <tr
+                                                key={`empty-${index}`}
+                                                className="border-t h-14"
+                                            >
+                                                <td colSpan={4}></td>
+                                            </tr>
+                                        ))}
 
                                 </tbody>
                             </table>
                             
                     )}           
-                    <div className="flex items-center justify-between px-5 py-4 border-t">
+                    {/* Page navigation for transactions */}
+                    <div className="flex items-center justify-between px-5 py-4 border-t bg-card">
                         <p className="text-sm text-muted-foreground">
 
                             Showing {startIndex + 1}–
