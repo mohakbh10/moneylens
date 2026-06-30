@@ -13,6 +13,12 @@ from routes.dashboard_route import (
     router as dashboard_router
 )
 
+from routes.ai_route import (
+    router as ai_router,
+)
+
+from routes.chat_routes import router as chat_router
+
 app = FastAPI()
 
 app.add_middleware(
@@ -30,3 +36,7 @@ app.include_router(
 app.include_router(
     dashboard_router
 )
+
+app.include_router(ai_router)
+
+app.include_router(chat_router)

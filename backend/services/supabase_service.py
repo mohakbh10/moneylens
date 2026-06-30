@@ -163,3 +163,20 @@ def get_insight_by_upload_id(
         return response.data[0]
 
     return None
+
+def update_ai_summary(
+    upload_id: str,
+    summary: str
+):
+    (
+        supabase
+        .table("insights")
+        .update({
+            "ai_summary": summary
+        })
+        .eq(
+            "upload_id",
+            upload_id
+        )
+        .execute()
+    )

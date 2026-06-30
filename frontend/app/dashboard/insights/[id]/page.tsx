@@ -17,6 +17,16 @@ import {
 
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import SpendingPieChart from "@/components/dashboard/SpendingPieChart";
+import IncomeExpenseChart from "@/components/dashboard/IncomeExpenseChart";
+import { categoryColors } from "@/lib/constants";
+import AISummaryCard from "@/components/dashboard/AISummaryCard";
+
+import {
+    getAISummary,
+} from "@/lib/api";
+
+import FloatingChat from "@/components/dashboard/chat/FloatingChat";
 
 type Insight = {
     total_income: number;
@@ -36,16 +46,7 @@ type Transaction = {
     transaction_type: string;
     category: string;
 };
-const categoryColors = {
-        Food: "bg-orange-100 text-orange-700",
-        Shopping: "bg-pink-100 text-pink-700",
-        Transport: "bg-blue-100 text-blue-700",
-        Bills: "bg-yellow-100 text-yellow-700",
-        Entertainment: "bg-purple-100 text-purple-700",
-        Income: "bg-green-100 text-green-700",
-        Transfer: "bg-sky-100 text-sky-700",
-        Education: "bg-indigo-100 text-indigo-700",
-    };
+
 export default function InsightsPage() {
     const { id } = useParams();
 
@@ -60,6 +61,8 @@ export default function InsightsPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
     const rowsPerPage = 5;
+
+    const [summary, setSummary] =useState("");
     // =========================
     // Load insight + transactions
     // =========================
@@ -74,10 +77,15 @@ export default function InsightsPage() {
 
                 const transactionData =
                     await getTransactions(id as string);
+                const summaryData =
+                    await getAISummary(id as string);
 
+                
                 setInsight(insightData);
 
                 setTransactions(transactionData);
+
+                setSummary(summaryData.summary);
 
             }
             catch (error) {
@@ -155,21 +163,21 @@ export default function InsightsPage() {
     const emptyRows = rowsPerPage - currentTransactions.length;
     return (
 
-        <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="max-w-5xl mx-auto px-6 py-5">
 
             {/* ========================= */}
             {/* Header */}
             {/* ========================= */}
 
-            <div className="mb-10">
+            <div className="mb-8">
 
-                <h1 className="text-4xl font-bold">
+                <h1 className="text-3xl font-bold">
 
                     Statement Insights
 
                 </h1>
 
-                <p className="text-muted-foreground mt-2">
+                <p className="text-muted-foreground mt-1">
 
                     AI-powered analysis of your uploaded bank statement.
 
@@ -181,11 +189,11 @@ export default function InsightsPage() {
             {/* KPI Cards */}
             {/* ========================= */}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
 
                 {/* Income */}
 
-                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                <div className="bg-card border rounded-2xl p-5 shadow-sm">
 
                     <div className="flex items-center justify-between">
 
@@ -200,7 +208,7 @@ export default function InsightsPage() {
 
                     </div>
 
-                    <h2 className="text-3xl font-bold mt-4 text-green-600">
+                    <h2 className="text-2xl font-bold mt-3 text-green-600">
 
                         {formatCurrency(
                             insight.total_income
@@ -212,7 +220,7 @@ export default function InsightsPage() {
 
                 {/* Expense */}
 
-                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                <div className="bg-card border rounded-2xl p-5 shadow-sm">
 
                     <div className="flex items-center justify-between">
 
@@ -227,7 +235,7 @@ export default function InsightsPage() {
 
                     </div>
 
-                    <h2 className="text-3xl font-bold mt-4 text-red-500">
+                    <h2 className="text-2xl font-bold mt-3 text-red-500">
 
                         {formatCurrency(
                             insight.total_expense
@@ -239,7 +247,7 @@ export default function InsightsPage() {
 
                 {/* Savings */}
 
-                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                <div className="bg-card border rounded-2xl p-5 shadow-sm">
 
                     <div className="flex items-center justify-between">
 
@@ -252,7 +260,7 @@ export default function InsightsPage() {
                     </div>
 
                     <h2
-                        className={`text-3xl font-bold mt-4 ${
+                        className={`text-2xl font-bold mt-3 ${
                             insight.net_savings >= 0
                                 ? "text-green-600"
                                 : "text-red-500"
@@ -269,7 +277,7 @@ export default function InsightsPage() {
 
                 {/* Count */}
 
-                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                <div className="bg-card border rounded-2xl p-5 shadow-sm">
 
                     <div className="flex items-center justify-between">
 
@@ -281,7 +289,7 @@ export default function InsightsPage() {
 
                     </div>
 
-                    <h2 className="text-3xl font-bold mt-4">
+                    <h2 className="text-2xl font-bold mt-3">
 
                         {insight.transaction_count}
 
@@ -290,14 +298,22 @@ export default function InsightsPage() {
                 </div>
 
             </div>
+            {/* ================= Insights AI Summary ================= */}
+            {summary && (
+                <div className="mt-8">
+                    <AISummaryCard
+                        summary={summary}
+                    />
+                </div>
+            )}
 
             {/* ========================= */}
             {/* Spending Overview */}
             {/* ========================= */}
 
-            <div className="mt-10 mb-5">
+            <div className="mt-7 mb-5">
 
-                <h2 className="text-2xl font-semibold">
+                <h2 className="text-xl font-semibold">
 
                     Spending Overview
 
@@ -305,11 +321,11 @@ export default function InsightsPage() {
 
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
                 {/* Top Category */}
 
-                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                <div className="bg-card border rounded-2xl p-5 shadow-sm">
 
                     <div className="flex items-center justify-between">
 
@@ -323,7 +339,7 @@ export default function InsightsPage() {
 
                     </div>
 
-                    <h2 className="text-2xl font-semibold mt-4">
+                    <h2 className="text-2xl font-semibold mt-3">
 
                         {insight.top_category}
 
@@ -333,7 +349,7 @@ export default function InsightsPage() {
 
                 {/* Largest Expense */}
 
-                <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                <div className="bg-card border rounded-2xl p-5 shadow-sm">
 
                     <p className="text-sm text-muted-foreground">
 
@@ -341,7 +357,7 @@ export default function InsightsPage() {
 
                     </p>
 
-                    <h2 className="text-3xl font-bold mt-4">
+                    <h2 className="text-2xl font-bold mt-3">
 
                         {formatCurrency(
                             insight.largest_expense
@@ -358,11 +374,27 @@ export default function InsightsPage() {
                 </div>
 
             </div>
+            {/* ================= Charts ================= */}
+            <div className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                <SpendingPieChart
+                    transactions={transactions}
+                />
+
+                <IncomeExpenseChart
+                    income={insight.total_income}
+                    expense={insight.total_expense}
+                />
+            </div>
+            
+            <div className="mt-10">
+                <FloatingChat uploadId={id as string}/>
+            </div>
             {/* ================= Transactions ================= */}
 
-            <div className="mt-10">
+            <div className="mt-8">
 
-                <h2 className="text-2xl font-semibold mb-5">
+                <h2 className="text-xl font-semibold mb-5">
                     Recent Transactions
                 </h2>
 
@@ -378,19 +410,19 @@ export default function InsightsPage() {
 
                                     <tr className="text-left">
 
-                                        <th className="px-5 py-4 text-sm">
+                                        <th className="px-4 py-3 text-sm">
                                             Date
                                         </th>
 
-                                        <th className="px-5 py-4 text-sm">
+                                        <th className="px-4 py-3 text-sm">
                                             Description
                                         </th>
 
-                                        <th className="px-5 py-4 text-sm">
+                                        <th className="px-4 py-3 text-sm">
                                             Category
                                         </th>
 
-                                        <th className="px-5 py-4 text-right text-sm">
+                                        <th className="px-4 py-3 text-right text-sm">
                                             Amount
                                         </th>
 
@@ -407,7 +439,7 @@ export default function InsightsPage() {
                                             className="border-t hover:bg-muted/30 transition-colors duration-200"
                                         >
 
-                                            <td className="px-5 py-4 max-w-xs truncate">
+                                            <td className="px-4 py-3 max-w-xs truncate">
 
                                                 {new Date(
                                                     transaction.transaction_date
@@ -415,13 +447,13 @@ export default function InsightsPage() {
 
                                             </td>
 
-                                            <td className="px-5 py-4 max-w-sm truncate">
+                                            <td className="px-4 py-3 max-w-sm truncate">
 
                                                 {transaction.description}
 
                                             </td>
 
-                                            <td className="px-5 py-4">
+                                            <td className="px-4 py-3">
                                                 <span
                                                     className={`
                                                         rounded-full
@@ -442,7 +474,7 @@ export default function InsightsPage() {
                                             </td>
 
                                             <td
-                                                className={`px-5 py-4 text-right font-semibold ${
+                                                className={`px-4 py-3 text-right font-semibold ${
                                                     transaction.transaction_type === "debit"
                                                         ? "text-red-500"
                                                         : "text-green-600"
@@ -477,7 +509,7 @@ export default function InsightsPage() {
                             
                     )}           
                     {/* Page navigation for transactions */}
-                    <div className="flex items-center justify-between px-5 py-4 border-t bg-card">
+                    <div className="flex items-center justify-between px-4 py-3 border-t bg-card">
                         <p className="text-sm text-muted-foreground">
 
                             Showing {startIndex + 1}–

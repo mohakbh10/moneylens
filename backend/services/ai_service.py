@@ -1,21 +1,9 @@
 import json
 from urllib import response
-import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 import json
-
-
-load_dotenv()
-
-genai.configure(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
-
-model = genai.GenerativeModel(
-    "gemini-2.5-flash"
-)
-
+from services.gemini_client import client, MODEL
 
 def extract_transactions(raw_text: str):
 
@@ -64,8 +52,9 @@ Statement:
 {raw_text}
 """
 
-    response = model.generate_content(
-        prompt
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=prompt,
     )
 
     cleaned = response.text.strip()
@@ -120,8 +109,9 @@ Transactions:
 {transactions}
 """
 
-    response = model.generate_content(
-        prompt
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=prompt,
     )
 
     cleaned = response.text.strip()
