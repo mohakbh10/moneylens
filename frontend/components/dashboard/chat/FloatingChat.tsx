@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { Bot, X } from "lucide-react";
-import { BrainCircuit } from "lucide-react";
-
 import AskAI from "./AskAI";
 
 type Props = {
@@ -71,8 +69,8 @@ export default function FloatingChat({
                 fixed
                 bottom-6
                 right-6
-                w-[420px]
-                h-[650px]
+                w-105
+                h-150
                 rounded-3xl
                 border
                 bg-background
@@ -116,6 +114,8 @@ export default function FloatingChat({
                 </div>
 
                 <button
+                    type="button"
+                    title="Close"
                     onClick={() => setOpen(false)}
                 >
 

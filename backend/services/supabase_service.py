@@ -180,3 +180,45 @@ def update_ai_summary(
         )
         .execute()
     )
+
+def get_budgets_by_user_and_month(
+    user_id: str,
+    month: str,
+):
+
+    response = (
+        supabase
+        .table("budgets")
+        .select("*")
+        .eq("user_id", user_id)
+        .eq("month", month)
+        .order("category")
+        .execute()
+    )
+
+    return response.data
+
+
+def upsert_budget( #upsert means insert if not exists, else update
+    user_id: str,
+    category: str,
+    amount: float,
+    month: str,
+):
+
+    response = (
+        supabase
+        .table("budgets")
+        .upsert(
+            {
+                "user_id": user_id,
+                "category": category,
+                "amount": amount,
+                "month": month,
+            },
+            on_conflict="user_id,category,month",
+        )
+        .execute()
+    )
+
+    return response.data

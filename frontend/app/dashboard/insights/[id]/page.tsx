@@ -27,6 +27,8 @@ import {
 } from "@/lib/api";
 
 import FloatingChat from "@/components/dashboard/chat/FloatingChat";
+import MonthlyTrendChart from "@/components/dashboard/MonthlyTrendChart";
+import BudgetPlanner from "@/components/dashboard/budget/BudgetPlanner";
 
 type Insight = {
     total_income: number;
@@ -375,17 +377,40 @@ export default function InsightsPage() {
 
             </div>
             {/* ================= Charts ================= */}
-            <div className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
+            {/* ================= Spending Analytics ================= */}
 
-                <SpendingPieChart
+            <div className="mt-8">
+
+                <h2 className="text-xl font-semibold mb-5">
+                    Spending Analytics
+                </h2>
+
+                {/* Daily spending trend */}
+
+                <MonthlyTrendChart
                     transactions={transactions}
                 />
 
-                <IncomeExpenseChart
-                    income={insight.total_income}
-                    expense={insight.total_expense}
-                />
+                {/* Category + Income/Expense charts */}
+
+                <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+                    <SpendingPieChart
+                        transactions={transactions}
+                    />
+
+                    <IncomeExpenseChart
+                        income={insight.total_income}
+                        expense={insight.total_expense}
+                    />
+
+                </div>
+
             </div>
+            {/* ================= Budget Planner ================= */}
+            <BudgetPlanner
+                transactions={transactions}
+            />
             
             <div className="mt-10">
                 <FloatingChat uploadId={id as string}/>

@@ -116,3 +116,57 @@ export async function askAI(
 
     return response.json();
 }
+
+export async function getBudgets(
+    userId: string,
+    month: string
+) {
+
+    const response = await fetch(
+        `${API_URL}/budgets?user_id=${encodeURIComponent(userId)}&month=${encodeURIComponent(month)}`
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Failed to fetch budgets"
+        );
+    }
+
+    return response.json();
+}
+
+
+export async function saveBudget(
+    userId: string,
+    category: string,
+    amount: number,
+    month: string
+) {
+
+    const response = await fetch(
+        `${API_URL}/budgets`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json",
+            },
+
+            body: JSON.stringify({
+                user_id: userId,
+                category,
+                amount,
+                month,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Failed to save budget"
+        );
+    }
+
+    return response.json();
+}
