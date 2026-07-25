@@ -28,6 +28,42 @@ def get_upload_by_id(upload_id: str):
 
     return response.data
 
+def get_upload_by_id_and_user(
+    upload_id: str,
+    user_id: str,
+):
+
+    response = (
+        supabase
+        .table("uploads")
+        .select("*")
+        .eq("id", upload_id)
+        .eq("user_id", user_id)
+        .execute()
+    )
+
+    if response.data:
+        return response.data[0]
+
+    return None
+
+def get_uploads_by_user(
+    user_id: str
+):
+
+    response = (
+        supabase
+        .table("uploads")
+        .select("*")
+        .eq("user_id", user_id)
+        .order(
+            "created_at",
+            desc=True,
+        )
+        .execute()
+    )
+
+    return response.data
 
 def update_raw_text(
     upload_id: str,

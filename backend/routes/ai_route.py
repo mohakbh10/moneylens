@@ -1,9 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from services.ai_summary_service import (
     generate_ai_summary,
 )
+
+from dependencies.auth import (
+    get_current_user,
+)
+
+from dependencies.upload_access import (
+    verify_upload_access,
+)
+
 
 router = APIRouter()
 
@@ -15,7 +24,15 @@ class SummaryRequest(BaseModel):
 @router.post("/ai-summary")
 def ai_summary(
     request: SummaryRequest,
+    user=Depends(get_current_user),
 ):
+
+    user_id = user["sub"]
+
+    verify_upload_access(
+        request.upload_id,
+        user_id,
+    )
 
     return generate_ai_summary(
         request.upload_id

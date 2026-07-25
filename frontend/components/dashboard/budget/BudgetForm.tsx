@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { saveBudget } from "@/lib/api";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -55,15 +54,6 @@ export default function BudgetForm({
                     "Statement month could not be determined"
                 );
             }
-            // Get logged-in user.
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
-            if (!user) {
-                throw new Error(
-                    "User not logged in"
-                );
-            }
 
             // Upsert means:
             //
@@ -76,7 +66,6 @@ export default function BudgetForm({
             // Save through FastAPI.
 
             await saveBudget(
-                user.id,
                 category,
                 numericAmount,
                 month
@@ -93,7 +82,7 @@ export default function BudgetForm({
 
         } finally {
             setSaving(false);
-        }
+        } 
     }
 
     return (

@@ -1,5 +1,13 @@
-from fastapi import APIRouter
+from fastapi import (
+    APIRouter,
+    Depends,
+)
+
 from pydantic import BaseModel
+
+from dependencies.auth import (
+    get_current_user,
+)
 
 from services.supabase_service import (
     get_budgets_by_user_and_month,
@@ -11,7 +19,6 @@ router = APIRouter()
 
 
 class BudgetRequest(BaseModel):
-    user_id: str
     category: str
     amount: float
     month: str
@@ -19,9 +26,11 @@ class BudgetRequest(BaseModel):
 
 @router.get("/budgets")
 def get_budgets(
-    user_id: str,
     month: str,
+    user=Depends(get_current_user),
 ):
+
+    user_id = user["sub"]
 
     return get_budgets_by_user_and_month(
         user_id,
@@ -32,10 +41,13 @@ def get_budgets(
 @router.post("/budgets")
 def save_budget(
     request: BudgetRequest,
+    user=Depends(get_current_user),
 ):
 
+    user_id = user["sub"]
+
     return upsert_budget(
-        request.user_id,
+        user_id,
         request.category,
         request.amount,
         request.month,

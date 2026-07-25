@@ -13,6 +13,7 @@ import {
 import {
     getInsights,
     getTransactions,
+    getAISummary,
 } from "@/lib/api";
 
 import { formatCurrency } from "@/lib/utils";
@@ -21,11 +22,6 @@ import SpendingPieChart from "@/components/dashboard/SpendingPieChart";
 import IncomeExpenseChart from "@/components/dashboard/IncomeExpenseChart";
 import { categoryColors } from "@/lib/constants";
 import AISummaryCard from "@/components/dashboard/AISummaryCard";
-
-import {
-    getAISummary,
-} from "@/lib/api";
-
 import FloatingChat from "@/components/dashboard/chat/FloatingChat";
 import MonthlyTrendChart from "@/components/dashboard/MonthlyTrendChart";
 import BudgetPlanner from "@/components/dashboard/budget/BudgetPlanner";
@@ -74,20 +70,16 @@ export default function InsightsPage() {
 
             try {
 
-                const insightData =
-                    await getInsights(id as string);
+                const [
+                    insightData,
+                    transactionData,
+                ] = await Promise.all([
+                    getInsights(id as string),
+                    getTransactions(id as string),
+                ]);
 
-                const transactionData =
-                    await getTransactions(id as string);
-                const summaryData =
-                    await getAISummary(id as string);
-
-                
                 setInsight(insightData);
-
                 setTransactions(transactionData);
-
-                setSummary(summaryData.summary);
 
             }
             catch (error) {
@@ -106,6 +98,38 @@ export default function InsightsPage() {
         if (id) {
             load();
         }
+
+    }, [id]);
+    useEffect(() => {
+
+        if (!id) return;
+
+        const loadSummary = async () => {
+
+            try {
+
+                const summaryData =
+                    await getAISummary(
+                        id as string
+                    );
+
+                setSummary(
+                    summaryData.summary
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "AI summary error:",
+                    error
+                );
+
+            }
+
+        };
+
+        loadSummary();
 
     }, [id]);
 

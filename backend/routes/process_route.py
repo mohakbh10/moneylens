@@ -1,4 +1,12 @@
-from fastapi import APIRouter
+from fastapi import Depends, APIRouter
+
+from dependencies.auth import (
+    get_current_user,
+)
+
+from dependencies.upload_access import (
+    verify_upload_access,
+)
 
 from models.transaction_request import (
     TransactionRequest
@@ -33,8 +41,14 @@ router = APIRouter()
     "/process-statement"
 )
 def process_statement(
-    request: TransactionRequest
+    request: TransactionRequest,
+    user=Depends(get_current_user),
 ):
+
+    verify_upload_access(
+        request.upload_id,
+        user["sub"],
+    )
 
     print("STEP 1")
     upload = get_upload_by_id(

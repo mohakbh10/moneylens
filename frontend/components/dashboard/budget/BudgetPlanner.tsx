@@ -6,7 +6,6 @@ import {
     useState,
 } from "react";
 
-import { supabase } from "@/lib/supabase";
 import { getBudgets } from "@/lib/api";
 import BudgetCard from "./BudgetCard";
 import BudgetForm from "./BudgetForm";
@@ -79,24 +78,15 @@ export default function BudgetPlanner({
             setLoading(true);
 
             try {
+                // Fetch budgets for the current month from the backend by calling the getBudgets function from the API library. The function takes the statementMonth as an argument and returns a list of budgets for that month. The budgets are then stored in the component's state using the setBudgets function. If there is an error during the fetch, it is logged to the console. Finally, the loading state is set to false to indicate that the fetch operation has completed.
+                const data =
+                    await getBudgets(
+                        statementMonth
+                    );
 
-                // We still use Supabase Auth to identify
-                // the currently logged-in user.
-                const {
-                    data: { user },
-                } = await supabase.auth.getUser();
-
-                if (!user) {
-                    return;
-                }
-
-                // Database access now goes through FastAPI.
-                const data = await getBudgets(
-                    user.id,
-                    statementMonth
+                setBudgets(
+                    data ?? []
                 );
-
-                setBudgets(data ?? []);
 
             } catch (error) {
 
