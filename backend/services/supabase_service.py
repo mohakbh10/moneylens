@@ -258,3 +258,120 @@ def upsert_budget( #upsert means insert if not exists, else update
     )
 
     return response.data
+
+def get_statement_history_by_user(
+    user_id: str
+):
+
+    uploads_response = (
+        supabase
+        .table("uploads")
+        .select(
+            "id, file_name, created_at"
+        )
+        .eq(
+            "user_id",
+            user_id
+        )
+        .order(
+            "created_at",
+            desc=True
+        )
+        .execute()
+    )
+
+    uploads = uploads_response.data
+
+    history = []
+
+    for upload in uploads:
+
+        transactions_response = (
+            supabase
+            .table("transactions")
+            .select(
+                "transaction_date",
+                count="exact"
+            )
+            .eq(
+                "upload_id",
+                upload["id"]
+            )
+            .order(
+                "transaction_date"
+            )
+            .limit(1)
+            .execute()
+        )
+
+        transactions = (
+            transactions_response.data
+        )
+
+        statement_month = None
+
+        if transactions:
+
+            statement_month = (
+                transactions[0][
+                    "transaction_date"
+                ][:7]
+            )
+
+        history.append({
+            "id": upload["id"],
+            "file_name": upload["file_name"],
+            "created_at": upload["created_at"],
+            "statement_month": statement_month,
+            "transaction_count":
+                transactions_response.count or 0,
+        })
+
+    return history
+
+#delete statement and associated transactions and insights
+def delete_statement(
+    upload_id: str
+):
+
+    # Delete insights
+    (
+        supabase
+        .table("insights")
+        .delete()
+        .eq("upload_id", upload_id)
+        .execute()
+    )
+
+    # Delete transactions
+    (
+        supabase
+        .table("transactions")
+        .delete()
+        .eq("upload_id", upload_id)
+        .execute()
+    )
+
+    # Delete upload row
+    response = (
+        supabase
+        .table("uploads")
+        .delete()
+        .eq("id", upload_id)
+        .execute()
+    )
+
+    return response.data
+#delete statement file from supabase storage
+def delete_statement_file(
+    file_path: str
+):
+
+    (
+        supabase
+        .storage
+        .from_("bank-statements")
+        .remove([
+            file_path
+        ])
+    )

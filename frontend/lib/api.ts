@@ -228,3 +228,51 @@ export async function saveBudget(
 
     return response.json();
 }
+export async function getStatementHistory() {
+
+    const headers =
+        await getAuthHeaders();
+
+    const response = await fetch(
+        `${API_URL}/statement-history`,
+        {
+            headers,
+        }
+    );
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Failed to fetch statement history: ${response.status}`
+        );
+
+    }
+
+    return response.json();
+}
+
+export async function deleteStatement(
+    uploadId: string
+) {
+
+    const headers =
+        await getAuthHeaders();
+
+    const response = await fetch(
+        `${API_URL}/statements/${uploadId}`,
+        {
+            method: "DELETE",
+            headers,
+        }
+    );
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Failed to delete statement: ${response.status}`
+        );
+
+    }
+
+    return response.json();
+}

@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import {
+    useParams,
+    useRouter,
+} from "next/navigation";
 import {
     IndianRupee,
     Wallet,
     TrendingUp,
     Receipt,
     PieChart,
+    ArrowLeft,
 } from "lucide-react";
 
 import {
@@ -47,7 +51,7 @@ type Transaction = {
 
 export default function InsightsPage() {
     const { id } = useParams();
-
+    const router = useRouter();
     const [insight, setInsight] =
         useState<Insight | null>(null);
 
@@ -187,6 +191,23 @@ export default function InsightsPage() {
             startIndex + rowsPerPage
         );
     const emptyRows = rowsPerPage - currentTransactions.length;
+    const statementDate =
+        transactions.length > 0
+            ? new Date(
+                transactions[0].transaction_date
+            )
+            : null;
+
+    const statementMonth =
+        statementDate
+            ? statementDate.toLocaleDateString(
+                "en-US",
+                {
+                    month: "long",
+                    year: "numeric",
+                }
+            )
+            : "Statement";
     return (
 
         <div className="max-w-5xl mx-auto px-6 py-5">
@@ -194,20 +215,32 @@ export default function InsightsPage() {
             {/* ========================= */}
             {/* Header */}
             {/* ========================= */}
-
+            <button
+                onClick={() =>
+                    router.push("/dashboard/uploads")
+                }
+                className="
+                    mb-4
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    text-muted-foreground
+                    hover:text-foreground
+                    transition
+                "
+            >
+                <ArrowLeft size={16} />
+                Back to statements
+            </button>
             <div className="mb-8">
 
-                <h1 className="text-3xl font-bold">
-
-                    Statement Insights
-
-                </h1>
-
-                <p className="text-muted-foreground mt-1">
-
-                    AI-powered analysis of your uploaded bank statement.
-
-                </p>
+            <h1 className="text-3xl font-bold">
+                {statementMonth} Insights
+            </h1>
+            <p className="text-muted-foreground mt-1">
+                AI-powered analysis of your {statementMonth} bank statement.
+            </p>
 
             </div>
 

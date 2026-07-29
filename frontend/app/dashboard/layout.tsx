@@ -1,9 +1,8 @@
 "use client";
 
-"use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 export default function DashboardLayout({children}: {children: React.ReactNode}) {
@@ -26,22 +25,22 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
     if (loading) return null;
     
     return (
-        <div className="flex min-h-screen">
-        <aside className="w-64 border-r bg-white p-6">
+        <div className="min-h-screen">
+        <aside className="fixed left-0 top-0 w-64 h-full border-r bg-white p-6">
             <h2 className="font-bold text-xl mb-8 text-emerald-600">
                 MoneyLens
             </h2>
 
             <nav className="space-y-4 text-sm">
-                <div className="hover:text-emerald-600 cursor-pointer">
-                Dashboard
-                </div>
-                <div className="hover:text-emerald-600 cursor-pointer">
-                Uploads
-                </div>
-                <div className="hover:text-emerald-600 cursor-pointer">
-                Insights
-                </div>
+                <Link href="/dashboard" className="block hover:text-emerald-600 cursor-pointer">
+                    Dashboard
+                </Link>
+                <Link href="/dashboard/uploads" className="block hover:text-emerald-600 cursor-pointer">
+                    Uploads
+                </Link>
+                <Link href="/dashboard/insights" className="block hover:text-emerald-600 cursor-pointer">
+                    Insights
+                </Link>
             </nav>
             <Button
                 variant="outline"
@@ -55,7 +54,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
                 </Button>
         </aside>
 
-        <main className="flex-1 p-8">{children}</main>
+        <main className="flex-1 p-8 ml-64">{children}</main>
         </div>
     );
 }

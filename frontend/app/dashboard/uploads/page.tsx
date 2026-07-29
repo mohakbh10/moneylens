@@ -9,6 +9,7 @@ import {
 } from "@/lib/api";
 
 import { useRouter } from "next/navigation";
+import StatementHistory from "@/components/dashboard/StatementHistory";
 
 type Upload = {
     id: string;
@@ -185,49 +186,8 @@ export default function UploadsPage() {
                 )}
             </div>
 
-            {/* Recent Uploads */}
-            <div className="mt-10">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold">Recent Uploads</h2>
-                    <span className="text-sm text-muted-foreground px-2">
-                        {uploads.length} files
-                    </span>
-                </div>
-
-                {uploads.length === 0 ? (
-                    <div className="border rounded-2xl p-10 text-center text-sm text-muted-foreground">
-                        No uploads yet.
-                    </div>
-                ) : (
-                    <div className="grid gap-3">
-                        {uploads.map((upload) => (
-                            <div
-                                key={upload.id}
-                                className="border rounded-xl px-4 py-3 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
-                            >
-                                <div className="flex items-center gap-3 min-w-0">
-                                    <div className="shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                        </svg>
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-medium truncate">
-                                            {upload.file_name}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {new Date(upload.created_at).toLocaleString()}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <span className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                    Uploaded
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                )}
+            <div className="mt-8">
+                <StatementHistory />
             </div>
 
         </div>
