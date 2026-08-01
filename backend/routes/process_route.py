@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 from fastapi import Depends, APIRouter
 
 from dependencies.auth import (
@@ -73,6 +75,14 @@ def process_statement(
             raw_text
         )
     )
+    if not transactions:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "No transactions were found in this PDF. "
+                "Please upload a valid bank statement."
+            ),
+        )
     print("STEP 6")
     for transaction in transactions:
 

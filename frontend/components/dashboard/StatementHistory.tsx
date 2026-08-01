@@ -16,6 +16,7 @@ import {
 import type {
     StatementHistoryItem,
 } from "@/types/statement";
+import { Button } from "../ui/button";
 
 
 function formatStatementMonth(
@@ -78,15 +79,23 @@ export default function StatementHistory() {
     }, []);
 
     if (loading) {
-
         return (
             <div className="border rounded-2xl bg-card p-6">
-                <p className="text-sm text-muted-foreground">
-                    Loading statements...
-                </p>
+                <div className="space-y-4">
+                    {[1,2,3].map((item) => (
+                        <div
+                            key={item}
+                            className="
+                                h-16
+                                rounded-xl
+                                bg-muted
+                                animate-pulse
+                            "
+                        />
+                    ))}
+                </div>
             </div>
         );
-
     }
     async function handleDelete(
         uploadId: string
@@ -137,34 +146,55 @@ export default function StatementHistory() {
             <div className="px-5 py-4 border-b">
 
                 <h2 className="text-lg font-semibold">
-                    Statement History
+                    Your Statements
                 </h2>
 
                 <p className="text-sm text-muted-foreground mt-1">
-                    View your previously analyzed statements.
+                    Browse previously analyzed bank statements.
                 </p>
 
             </div>
 
             {uploads.length === 0 ? (
-
-                <div className="p-8 text-center">
-
-                    <FileText
-                        size={28}
-                        className="mx-auto mb-3 text-muted-foreground"
-                    />
-
-                    <p className="font-medium">
-                        No statements yet
+                <div className="p-12 text-center">
+                    <div
+                        className="
+                            mx-auto
+                            mb-5
+                            flex
+                            h-16
+                            w-16
+                            items-center
+                            justify-center
+                            rounded-full
+                            bg-muted
+                        "
+                    >
+                        <FileText
+                            size={30}
+                            className="text-muted-foreground"
+                        />
+                    </div>
+                    <h3 className="text-lg font-semibold">
+                        No statements uploaded
+                    </h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                        Upload your first bank statement to unlock
+                        AI insights, budgeting and spending analytics.
                     </p>
-
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Upload your first bank statement to get started.
-                    </p>
-
+                    {/* NEW: Quick CTA for first-time users */}
+                    <Button
+                        onClick={() =>
+                            window.scrollTo({
+                                top: 0,
+                                behavior: "smooth",
+                            })
+                        }
+                        className="mt-6"
+                    >
+                        Upload Statement
+                    </Button>
                 </div>
-
             ) : (
 
                 <div>
@@ -180,6 +210,7 @@ export default function StatementHistory() {
                                 border-b
                                 last:border-b-0
                                 hover:bg-muted/40
+                                hover:scale-[1.01]
                                 transition
                             "
                         >
@@ -208,8 +239,8 @@ export default function StatementHistory() {
 
                                     <div
                                         className="
-                                            h-10
-                                            w-10
+                                            h-12
+                                            w-12
                                             shrink-0
                                             rounded-xl
                                             bg-muted
@@ -284,15 +315,29 @@ export default function StatementHistory() {
                                         </p>
 
                                         <p
-                                            className="
-                                                mt-1
-                                                text-xs
-                                                text-muted-foreground
-                                            "
+                                        className="
+                                        mt-1
+                                        text-xs
+                                        text-muted-foreground
+                                        "
                                         >
-                                            {upload.transaction_count} transactions
+                                        {upload.transaction_count} transaction
+                                        {upload.transaction_count !== 1 && "s"}
                                         </p>
+                                        <p
+                                        className="
+                                        text-xs
+                                        text-muted-foreground
+                                        "
+                                        >
 
+                                        Uploaded{" "}
+
+                                        {new Date(
+                                        upload.created_at
+                                        ).toLocaleDateString()}
+
+                                        </p>
                                     </div>
 
                                 </div>
