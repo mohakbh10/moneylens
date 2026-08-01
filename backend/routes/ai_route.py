@@ -1,3 +1,4 @@
+from services.ai_recommendation_service import generate_ai_recommendations
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
@@ -36,4 +37,32 @@ def ai_summary(
 
     return generate_ai_summary(
         request.upload_id
+    )
+
+class RecommendationRequest(
+    BaseModel
+):
+    upload_id: str
+
+
+@router.post(
+    "/ai-recommendations"
+)
+def ai_recommendations(
+    request:
+    RecommendationRequest,
+    user=Depends(
+        get_current_user
+    ),
+):
+
+    verify_upload_access(
+        request.upload_id,
+        user["sub"],
+    )
+
+    return (
+        generate_ai_recommendations(
+            request.upload_id
+        )
     )

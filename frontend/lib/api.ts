@@ -276,3 +276,33 @@ export async function deleteStatement(
 
     return response.json();
 }
+
+export async function getAIRecommendations(
+    uploadId: string
+) {
+
+    const headers =
+        await getAuthHeaders();
+
+    const response = await fetch(
+        `${API_URL}/ai-recommendations`,
+        {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                upload_id: uploadId,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Failed to generate recommendations"
+        );
+
+    }
+
+    return response.json();
+
+}

@@ -18,6 +18,7 @@ import {
     getInsights,
     getTransactions,
     getAISummary,
+    getAIRecommendations,
 } from "@/lib/api";
 
 import { formatCurrency } from "@/lib/utils";
@@ -29,6 +30,7 @@ import AISummaryCard from "@/components/dashboard/AISummaryCard";
 import FloatingChat from "@/components/dashboard/chat/FloatingChat";
 import MonthlyTrendChart from "@/components/dashboard/MonthlyTrendChart";
 import BudgetPlanner from "@/components/dashboard/budget/BudgetPlanner";
+import AIRecommendationCard from "@/components/dashboard/AIRecommendationCard";
 
 type Insight = {
     total_income: number;
@@ -65,6 +67,7 @@ export default function InsightsPage() {
     const rowsPerPage = 5;
 
     const [summary, setSummary] =useState("");
+    const [recommendations,setRecommendations] = useState("");
     // =========================
     // Load insight + transactions
     // =========================
@@ -116,9 +119,17 @@ export default function InsightsPage() {
                     await getAISummary(
                         id as string
                     );
-
+                const recommendationData =
+                    await getAIRecommendations(
+                        id as string
+                    );
                 setSummary(
                     summaryData.summary
+                );
+                
+
+                setRecommendations(
+                    recommendationData.recommendations
                 );
 
             }
@@ -365,7 +376,16 @@ export default function InsightsPage() {
                     />
                 </div>
             )}
-
+            {/* ================= AI Recommendations ================= */}
+            {recommendations && (
+                <div className="mt-6">
+                    <AIRecommendationCard
+                        recommendations={
+                            recommendations
+                        }
+                    />
+                </div>
+            )}
             {/* ========================= */}
             {/* Spending Overview */}
             {/* ========================= */}

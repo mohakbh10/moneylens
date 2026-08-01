@@ -375,3 +375,44 @@ def delete_statement_file(
             file_path
         ])
     )
+
+def get_ai_summary(
+    upload_id: str,
+):
+
+    response = (
+        supabase
+        .table("insights")
+        .select("ai_summary")
+        .eq(
+            "upload_id",
+            upload_id,
+        )
+        .single()
+        .execute()
+    )
+
+    return response.data.get(
+        "ai_summary"
+    )
+
+def update_ai_recommendations(
+    upload_id: str,
+    recommendations: str,
+):
+
+    (
+        supabase
+        .table("insights")
+        .update(
+            {
+                "ai_recommendations":
+                recommendations
+            }
+        )
+        .eq(
+            "upload_id",
+            upload_id
+        )
+        .execute()
+    )

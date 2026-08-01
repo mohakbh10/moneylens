@@ -32,11 +32,20 @@ export default function AskAI({
     ]);
 
     const suggestions = [
-        "Why did I spend so much this month?",
-        "Where can I save money?",
-        "Which category had the highest spending?",
-        "What were my biggest purchases?",
+    "How can I improve my savings?",
+    "Where am I overspending?",
+    "What spending habits stand out?",
+    "Did I make any unusual purchases?",
+    "Give me personalized financial advice.",
     ];
+    const loadingMessages = [
+        "Analyzing transactions...",
+        "Reviewing spending patterns...",
+        "Finding saving opportunities...",
+        "Preparing financial advice...",
+        "Looking for unusual purchases...",
+    ];
+    const [loadingText, setLoadingText] = useState("");
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({
@@ -62,7 +71,14 @@ export default function AskAI({
 
         setQuestion("");
         setLoading(true);
-
+        setLoadingText(
+            loadingMessages[
+                Math.floor(
+                    Math.random() *
+                    loadingMessages.length
+                )
+            ]
+        );
         try {
 
             const response = await askAI(
@@ -117,11 +133,12 @@ export default function AskAI({
                 ))}
 
                 {loading && (
-
                     <ChatBubble role="assistant">
                         <TypingIndicator />
+                        <p className="mt-2 text-xs text-muted-foreground">
+                            {loadingText}
+                        </p>
                     </ChatBubble>
-
                 )}
                 {/* Auto-scroll target */}
                 <div ref={bottomRef} />

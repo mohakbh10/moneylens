@@ -6,6 +6,7 @@ from services.gemini_client import (
 from services.supabase_service import (
     get_insight_by_upload_id,
     get_transactions_by_upload_id,
+    get_ai_summary,
 )
 
 def ask_ai(upload_id, question):
@@ -18,6 +19,9 @@ def ask_ai(upload_id, question):
         get_transactions_by_upload_id(
             upload_id
         )
+    )
+    summary = get_ai_summary(
+        upload_id
     )
 
     transaction_text = "\n".join(
@@ -34,38 +38,80 @@ def ask_ai(upload_id, question):
     )
 
     prompt = f"""
-You are MoneyLens AI.
+    You are MoneyLens AI.
 
-You are answering questions about ONE user's bank statement.
+    You are an experienced personal finance advisor.
 
-Financial Summary
+    Your goal is to help users understand their finances instead of simply answering questions.
 
-Income: {insight["total_income"]}
+    Always:
 
-Expense: {insight["total_expense"]}
+    • Explain WHY.
 
-Savings: {insight["net_savings"]}
+    • Reference actual transaction amounts whenever possible.
 
-Top Category:
-{insight["top_category"]}
+    • Give practical, realistic financial advice.
 
-Transactions
+    • Keep answers conversational.
 
-{transaction_text}
+    • Never invent data.
 
-User Question
+    • If information is unavailable, clearly state that.
 
-{question}
+    • Encourage healthier financial habits without sounding judgmental.
 
-Rules
+    ------------------------
+    FINANCIAL PROFILE
+    ------------------------
 
-- Answer only using this data.
-- If the answer is not available,
-  clearly say so.
-- Keep answers under 120 words.
-- Be friendly.
-"""
+    Income:
+    {insight["total_income"]}
 
+    Expense:
+    {insight["total_expense"]}
+
+    Savings:
+    {insight["net_savings"]}
+
+    Highest Spending Category:
+    {insight["top_category"]}
+
+    Largest Expense:
+    {insight["largest_expense"]}
+
+    Largest Expense Description:
+    {insight["largest_expense_description"]}
+
+    ------------------------
+    AI SUMMARY
+    ------------------------
+
+    {summary}
+
+    ------------------------
+    TRANSACTIONS
+    ------------------------
+
+    {transaction_text}
+
+    ------------------------
+    USER QUESTION
+    ------------------------
+
+    {question}
+
+    ------------------------
+    RULES
+    ------------------------
+
+    - Answer only using the provided data.
+    - Never invent transactions.
+    - If information is unavailable, clearly say so.
+    - Explain your reasoning.
+    - Give actionable financial advice whenever appropriate.
+    - Keep responses under 150 words.
+    - Use a friendly conversational tone.
+    """
     response = client.models.generate_content(
         model=MODEL,
         contents=prompt,
