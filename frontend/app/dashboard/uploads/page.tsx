@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import {
-    getUploads,
-    processStatement,
-} from "@/lib/api";
 
 import { useRouter } from "next/navigation";
+import {
+    processStatement,
+} from "@/lib/api";
 import StatementHistory from "@/components/dashboard/StatementHistory";
+import { toast } from "sonner";
+import FadeIn from "@/components/animations/FadeIn";
+import { motion } from "framer-motion";
 
 type Upload = {
     id: string;
@@ -19,38 +21,13 @@ type Upload = {
 
 export default function UploadsPage() {
     const [file, setFile] = useState<File | null>(null);
-    const [uploads, setUploads] = useState<Upload[]>([]);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
-    // NEW: User-friendly error message
-    const [error, setError] = useState("");
-    // NEW: Success message before redirect
-    const [success, setSuccess] = useState("");
     const router = useRouter();
-    const fetchUploads = async () => {
-        try {
-            const data = await getUploads();
-            setUploads(data);
-        } catch (error) {
-            console.error(
-                "Fetch uploads error:",
-                error
-            );
-        }
-    };
-
-    useEffect(() => {
-        fetchUploads();
-    }, []);
-
+    const canAnimate = !loading && !!file;
     const handleUpload = async () => {
-        // NEW: Clear previous messages before every upload
-        setError("");
-        setSuccess("");
         if (!file) {
-            setError(
-                "Please select a PDF statement first."
-            );
+            toast.error("Please select a PDF statement first.");
             return;
         }
 
@@ -66,9 +43,7 @@ export default function UploadsPage() {
 
         if (!user) {
 
-            setError(
-                "Please sign in again."
-            );
+            toast.error("Please sign in again.");
 
             setLoading(false);
 
@@ -89,9 +64,7 @@ export default function UploadsPage() {
 
             console.error(uploadError);
 
-            setError(
-                uploadError.message
-            );
+            toast.error(uploadError.message);
 
             setLoading(false);
 
@@ -118,9 +91,7 @@ export default function UploadsPage() {
 
             console.error(dbError);
 
-            setError(
-                dbError.message
-            );
+            toast.error(dbError.message);
 
             setLoading(false);
 
@@ -145,8 +116,8 @@ export default function UploadsPage() {
             );
 
             // NEW: Success message
-            setSuccess(
-                "Statement analyzed successfully!"
+            toast.success(
+                "Statement analyzed! Opening insights..."
             );
 
             setFile(null);
@@ -165,7 +136,7 @@ export default function UploadsPage() {
 
             console.error(error);
 
-            setError(
+            toast.error(
                 "Unable to analyze your statement. Please try again."
             );
 
@@ -179,7 +150,7 @@ export default function UploadsPage() {
     };
 
     return (
-
+        <FadeIn>
         <div className="max-w-3xl mx-auto px-6 py-10">
 
             {/* Header */}
@@ -286,94 +257,62 @@ export default function UploadsPage() {
                     />
 
                 </label>
-
-                <Button
-                    onClick={handleUpload}
-                    disabled={
-                        loading || !file
+                <motion.div
+                    whileHover={
+                        canAnimate
+                            ? { scale: 1.02 }
+                            : undefined
                     }
-                    className="w-full mt-2"
+                    whileTap={
+                        canAnimate
+                            ? { scale: 0.98 }
+                            : undefined
+                    }
                 >
-
-                    {/* NEW: Spinner + live status */}
-
-                    {loading ? (
-
-                        <div className="flex items-center justify-center gap-2">
-
-                            <div
-                                className="
-                                    h-4
-                                    w-4
-                                    rounded-full
-                                    border-2
-                                    border-current
-                                    border-t-transparent
-                                    animate-spin
-                                "
-                            />
-
-                            <span>
-
-                                {status}
-
-                            </span>
-
-                        </div>
-
-                    ) : (
-
-                        "Upload Statement"
-
-                    )}
-
-                </Button>
-
-                {/* NEW: Error card */}
-
-                {error && (
-
-                    <div
-                        className="
-                            mt-4
-                            rounded-xl
-                            border
-                            border-red-300
-                            bg-red-50
-                            p-4
-                            text-sm
-                            text-red-700
-                        "
+                    <Button
+                        onClick={handleUpload}
+                        disabled={
+                            loading || !file
+                        }
+                        className="w-full mt-2"
                     >
 
-                        ❌ {error}
+                        {/* NEW: Spinner + live status */}
 
-                    </div>
+                        {loading ? (
 
-                )}
+                            <div className="flex items-center justify-center gap-2">
 
-                {/* NEW: Success card */}
+                                <div
+                                    className="
+                                        h-4
+                                        w-4
+                                        rounded-full
+                                        border-2
+                                        border-current
+                                        border-t-transparent
+                                        animate-spin
+                                    "
+                                />
 
-                {success && (
+                                <span>
 
-                    <div
-                        className="
-                            mt-4
-                            rounded-xl
-                            border
-                            border-green-300
-                            bg-green-50
-                            p-4
-                            text-sm
-                            text-green-700
-                        "
-                    >
+                                    {status}
 
-                        ✅ {success}
+                                </span>
 
-                    </div>
+                            </div>
 
-                )}
+                        ) : (
+
+                            "Upload Statement"
+
+                        )}
+
+                    </Button>
+
+                </motion.div>
+
 
             </div>
 
@@ -382,5 +321,6 @@ export default function UploadsPage() {
             </div>
             
         </div>
+        </FadeIn>
     );
 }

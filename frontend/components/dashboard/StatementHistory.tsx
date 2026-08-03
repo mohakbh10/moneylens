@@ -17,7 +17,8 @@ import type {
     StatementHistoryItem,
 } from "@/types/statement";
 import { Button } from "../ui/button";
-
+import { Skeleton } from "../ui/skeleton";
+import { motion } from "framer-motion";
 
 function formatStatementMonth(
     month: string | null
@@ -80,22 +81,52 @@ export default function StatementHistory() {
 
     if (loading) {
         return (
-            <div className="border rounded-2xl bg-card p-6">
-                <div className="space-y-4">
-                    {[1,2,3].map((item) => (
-                        <div
-                            key={item}
-                            className="
-                                h-16
-                                rounded-xl
-                                bg-muted
-                                animate-pulse
-                            "
-                        />
-                    ))}
+            <div
+                className="
+                    border
+                    rounded-2xl
+                    bg-card
+                    overflow-hidden
+                "
+            >
+                {/* Header */}
+
+                <div className="px-5 py-4 border-b">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-72 mt-3" />
                 </div>
+                {/* Statement Rows */}
+                {[1, 2, 3].map((item) => (
+                    <div
+                        key={item}
+                        className="
+                            flex
+                            items-center
+                            justify-between
+                            px-5
+                            py-4
+                            border-b
+                        "
+                    >
+
+                        <div className="flex items-center gap-4">
+                            <Skeleton className="h-10 w-10 rounded-xl" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-40" />
+                                <Skeleton className="h-3 w-56" />
+                                <Skeleton className="h-3 w-24" />
+
+                            </div>
+                        </div>
+                        <Skeleton className="h-5 w-5 rounded-full" />
+                    </div>
+
+                ))}
+
             </div>
+
         );
+
     }
     async function handleDelete(
         uploadId: string
@@ -140,7 +171,6 @@ export default function StatementHistory() {
 
     }
     return (
-
         <div className="border rounded-2xl bg-card overflow-hidden">
 
             <div className="px-5 py-4 border-b">
@@ -198,9 +228,20 @@ export default function StatementHistory() {
             ) : (
 
                 <div>
-                    {uploads.map((upload) => (
-                        <div
+                    {uploads.map((upload,index) => (
+                        <motion.div
                             key={upload.id}
+                            initial={{
+                                opacity: 0,
+                                y: 8,
+                            }}
+                            animate={{
+                                opacity: 1,
+                                y: 0,
+                            }}
+                            transition={{
+                                delay: index * 0.06,
+                            }}
                             className="
                                 flex
                                 items-center
@@ -381,7 +422,7 @@ export default function StatementHistory() {
 
                             </button>
 
-                        </div>
+                        </motion.div>
 
                     ))}
                 </div>
@@ -389,7 +430,6 @@ export default function StatementHistory() {
             )}
 
         </div>
-
     );
 
 }
