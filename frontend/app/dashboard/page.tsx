@@ -39,11 +39,14 @@ function formatStatementMonth(
         }
     );
 }
-type DashboardInsight = {
+type Insight = {
     total_income: number;
     total_expense: number;
     net_savings: number;
     top_category: string;
+    largest_expense: number;
+    largest_expense_description: string;
+    transaction_count: number;
 };
 
 export default function DashboardPage() {
@@ -54,7 +57,7 @@ export default function DashboardPage() {
         useState<StatementHistoryItem[]>([]);
     // NEW: Stores AI-generated insights for the latest statement
     const [latestInsight, setLatestInsight] =
-        useState<DashboardInsight | null>(null);
+        useState<Insight | null>(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const loadLatestStatement = async () => {
@@ -94,10 +97,13 @@ export default function DashboardPage() {
     }, []);
     if (loading) {
         return (
-            <div className="max-w-6xl mx-auto px-6 py-8">
-                <h2 className="text-2xl font-semibold">
-                    Loading dashboard...
-                </h2>
+            <div className="space-y-6">
+                <div className="h-10 w-52 rounded bg-muted animate-pulse"/>
+                <div className="grid grid-cols-3 gap-5">
+                    <div className="h-36 rounded-xl bg-muted animate-pulse"/>
+                    <div className="h-36 rounded-xl bg-muted animate-pulse"/>
+                    <div className="h-36 rounded-xl bg-muted animate-pulse"/>
+                </div>
             </div>
         );
     }
@@ -206,9 +212,13 @@ export default function DashboardPage() {
                 </div>
                 {/*Third Card: View Reports */}
                 <div
-                    onClick={() =>
-                        router.push("/dashboard/uploads")
-                    }
+                    onClick={() => {
+                        if (latestStatement) {
+                            router.push(
+                                `/dashboard/insights/${latestStatement.id}`
+                            );
+                        }
+                    }}
                     className="
                         rounded-2xl
                         border
@@ -277,6 +287,12 @@ export default function DashboardPage() {
 
                             {latestStatement.file_name}
 
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Uploaded{" "}
+                            {new Date(
+                                latestStatement.created_at
+                            ).toLocaleDateString()}
                         </p>
                         <p
                             className="
@@ -406,37 +422,44 @@ export default function DashboardPage() {
                     </div>
                     {/* View Insights Button */}
                     <Button
-
-                    className="mt-8"
-
-                    onClick={() =>
-                    router.push(
-                    `/dashboard/insights/${latestStatement.id}`
-                    )
-                    }
-
+                        size="lg"
+                        className="mt-8 w-full"
+                        onClick={() =>
+                            router.push(
+                            `/dashboard/insights/${latestStatement.id}`
+                            )
+                            }
                     >
-
-                    View Insights →
-
+                        View Full Analysis →
                     </Button>
                     </>
 
                 ) : (
+                    <div className="text-center py-10">
 
-                    <div className="text-center py-6">
+                        <Upload
+                            size={42}
+                            className="mx-auto text-muted-foreground mb-4"
+                        />
 
-                        <p className="text-lg font-medium">
-
-                            No statements uploaded yet
-
-                        </p>
+                        <h3 className="text-lg font-semibold">
+                            No statements yet
+                        </h3>
 
                         <p className="text-sm text-muted-foreground mt-2">
-
-                            Upload your first bank statement to start tracking your finances.
-
+                            Upload your first bank statement
+                            to unlock AI-powered insights,
+                            budgeting and spending analysis.
                         </p>
+
+                        <Button
+                            className="mt-6"
+                            onClick={() =>
+                                router.push("/dashboard/uploads")
+                            }
+                        >
+                            Upload Statement
+                        </Button>
 
                     </div>
 
@@ -513,6 +536,17 @@ export default function DashboardPage() {
                                                 ? "transaction"
                                                 : "transactions"}
                                             </p>
+                                            <p
+                                                className="
+                                                    text-xs
+                                                    text-muted-foreground
+                                                    mt-1
+                                                "
+                                            >
+
+                                                {statement.file_name}
+
+                                            </p>
                                         </div>
                                         <ChevronRight
                                             size={18}
@@ -525,7 +559,15 @@ export default function DashboardPage() {
 
                     )}
                     {statements.length > 0 && (
-                        <div className="border-t px-5 py-4">
+                        <div
+                        className="
+                        border-t
+                        px-5
+                        py-4
+                        flex
+                        justify-end
+                        "
+                        >
                             <Button
                                 variant="ghost"
                                 onClick={() =>
