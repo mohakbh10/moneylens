@@ -1,66 +1,194 @@
 # 💸 MoneyLens
 
-> AI-powered personal finance dashboard that transforms raw bank statements into meaningful financial insights.
+> MoneyLens is an AI-powered personal finance dashboard that transforms PDF bank statements into structured transactions, intelligent financial insights, AI-generated summaries, and personalized spending recommendations.
 
-MoneyLens automatically extracts transactions from uploaded bank statements, categorizes them using AI, and generates spending insights through a modern dashboard.
+MoneyLens helps users understand where their money goes by automatically extracting transactions from bank statements, categorizing expenses using AI, and presenting spending insights through an intuitive dashboard.
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
+![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E)
+![Gemini](https://img.shields.io/badge/Google-Gemini-blue)
+
+🌐 **Live Demo:** Coming Soon
+
+📽 **Demo Video:** Coming Soon
 
 ---
 
-## Features
+# 📑 Table of Contents
 
-### Authentication
-- User authentication with Supabase Auth
+- Features
+- Highlights
+- Financial Insights
+- AI Assistant
+- Budget Planner
+- Dashboard
+- System Architecture
+- Tech Stack
+- Project Structure
+- Processing Pipeline
+- Backend API
+- Example Insight
+- Screenshots
+- Getting Started
+- Environment Variables
+- Deployment
+- Completed Features
+- Future Improvements
+- What I Learned
+- Why MoneyLens?
+- Author
+- License
+
+---
+
+# ✨ Highlights
+
+- 🤖 AI-powered transaction extraction from PDF bank statements
+- 📄 Automatic transaction parsing & categorization
+- 💰 Interactive financial insights dashboard
+- 💬 AI financial assistant powered by Gemini
+- 💵 Monthly budget planner
+- 🔒 Secure authentication with Supabase
+- ⚡ Full-stack architecture using Next.js + FastAPI
+
+---
+
+# 🚀 Features
+
+## 🔐 Authentication
+
+- Secure user authentication with Supabase Auth
 - Protected dashboard routes
+- User-specific financial data
 
-### Statement Upload
-- Upload PDF bank statements
-- Secure file storage using Supabase Storage
+---
+
+## 📄 Statement Upload
+
+- Upload PDF bank or credit card statements
+- Secure storage using Supabase Storage
 - Upload history
+- Delete uploaded statements
 
-### AI Transaction Processing
+---
+
+## 🤖 AI-powered Transaction Processing
+
 - PDF text extraction
 - AI-powered transaction parsing
-- Automatic credit/debit detection
-- Merchant extraction
-
-### AI Categorization
-Transactions are automatically categorized into categories such as:
-
-- Food
-- Bills
-- Shopping
-- Entertainment
-- Education
-- Transfer
-- Income
-- Transport
-- Others
-
-Powered by Google Gemini.
-
-### Financial Insights
-
-For every uploaded statement MoneyLens generates:
-
-- Total Income
-- Total Expense
-- Net Savings
-- Top Spending Category
-- Largest Expense
-- Transaction Count
-
-### Dashboard
-
-Current dashboard includes:
-
-- KPI cards
-- Spending overview
-- Recent transactions
-- Upload history
+- Automatic merchant detection
+- Credit & debit identification
+- Transaction normalization
 
 ---
 
-# Tech Stack
+## 🏷️ AI-powered Categorization
+
+Transactions are automatically categorized into:
+
+- Food
+- Shopping
+- Bills
+- Entertainment
+- Education
+- Transport
+- Transfer
+- Income
+- Others
+
+Powered by **Google Gemini 2.5 Flash**.
+
+---
+
+# 📊 Financial Insights
+
+MoneyLens automatically generates:
+
+- 💰 Total Income
+- 💸 Total Expenses
+- 📈 Net Savings
+- 🏆 Top Spending Category
+- 💳 Largest Expense
+- 📑 Transaction Count
+- 🤖 AI Financial Summary
+- 💡 Personalized AI Recommendations
+
+---
+
+# 💬 AI Assistant
+
+Ask questions about your spending, including:
+
+- "Where did I spend the most?"
+- "How can I reduce expenses?"
+- "Summarize my statement."
+- "How much did I spend on shopping?"
+- "What's my biggest transaction?"
+
+Responses are generated using Google Gemini AI.
+
+---
+
+# 💵 Budget Planner
+
+- Create monthly category budgets
+- Compare planned vs actual spending
+- Budget management dashboard
+- Secure per-user budget storage
+
+---
+
+# 📈 Dashboard
+
+The dashboard includes:
+
+- Quick Actions
+- Latest Statement Overview
+- KPI Cards
+- AI Summary
+- Spending Overview
+- Recent Transactions
+- Statement History
+- Financial Snapshot
+- Upload History
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                Next.js Frontend
+                        │
+                        ▼
+             Supabase Authentication
+                        │
+                        ▼
+               Upload PDF Statement
+                        │
+                        ▼
+             Supabase Storage Bucket
+                        │
+                        ▼
+                FastAPI Backend
+                        │
+        ┌───────────────┴───────────────┐
+        │                               │
+        ▼                               ▼
+ PDF Text Extraction             Google Gemini AI
+        │                               │
+        └───────────────┬───────────────┘
+                        ▼
+             Transaction Processing
+                        ▼
+          PostgreSQL (Supabase Database)
+                        ▼
+            Dashboard & Financial Insights
+```
+
+---
+
+# 🛠 Tech Stack
 
 ## Frontend
 
@@ -69,28 +197,31 @@ Current dashboard includes:
 - TypeScript
 - Tailwind CSS v4
 - shadcn/ui
-- Lucide Icons
+- Lucide React
+- Sonner Toasts
 
-## Backend
+### Backend
 
 - FastAPI
 - Python
+- Pydantic
+- pdfplumber
 
-## Database
+### Database & Storage
 
 - Supabase PostgreSQL
 - Supabase Storage
 - Supabase Authentication
 
-## AI
+### AI
 
-- Google Gemini
+- Google Gemini 2.5 Flash
 
 ---
 
-# Project Structure
+# 📂 Project Structure
 
-```
+```text
 MoneyLens/
 
 frontend/
@@ -101,183 +232,262 @@ frontend/
 │   └── ...
 │
 ├── components/
+├── hooks/
 ├── lib/
+├── types/
 └── ...
 
 backend/
 │
 ├── routes/
 ├── services/
-├── helpers/
 ├── models/
+├── dependencies/
+├── helpers/
 └── ...
 ```
 
 ---
 
-# Current Pipeline
+# ⚙️ Processing Pipeline
 
-```
+```text
 Upload PDF
-
-        ↓
-
+      │
+      ▼
 Supabase Storage
-
-        ↓
-
+      │
+      ▼
 uploads table
-
-        ↓
-
-FastAPI
-
-        ↓
-
-Extract raw text
-
-        ↓
-
-AI extracts transactions
-
-        ↓
-
-Transactions stored
-
-        ↓
-
-AI categorizes transactions
-
-        ↓
-
-Insights generated
-
-        ↓
-
-Dashboard
+      │
+      ▼
+FastAPI Backend
+      │
+      ▼
+Extract PDF Text
+      │
+      ▼
+Gemini AI extracts transactions
+      │
+      ▼
+Transactions stored in PostgreSQL
+      │
+      ▼
+Gemini categorizes transactions
+      │
+      ▼
+Generate Financial Insights
+      │
+      ▼
+Dashboard + AI Assistant
 ```
 
 ---
 
-# Current APIs
+# 🌐 Backend API
 
-## Processing
-
-```
-POST /process-statement
-```
-
-Runs the complete processing pipeline.
-
----
-
-## Dashboard
-
-```
-GET /uploads
-```
-
-Returns uploaded statements.
-
-```
-GET /transactions/{upload_id}
-```
-
-Returns all extracted transactions.
-
-```
-GET /insights/{upload_id}
-```
-
-Returns generated insights.
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/process-statement` | Runs the complete statement processing pipeline |
+| GET | `/uploads` | Retrieve uploaded statements |
+| GET | `/transactions/{upload_id}` | Retrieve extracted transactions |
+| GET | `/insights/{upload_id}` | Retrieve generated financial insights |
+| POST | `/generate-summary` | Generate AI financial summary |
+| POST | `/ask-ai` | Chat with your financial data |
+| GET | `/budgets` | Retrieve monthly budgets |
+| POST | `/budgets` | Create or update budgets |
 
 ---
 
-# Example Insight
+# 📈 Example Insight
 
-```
-Income:            ₹3,038
+```text
+Income            ₹3,038
 
-Expense:           ₹2,888.76
+Expense           ₹2,888.76
 
-Net Savings:       ₹149.24
+Net Savings       ₹149.24
 
-Top Category:      Transfer
+Top Category      Transfer
 
-Largest Expense:   ₹1,459
+Largest Expense   ₹1,459
 
-Transactions:      15
+Transactions      15
 ```
 
 ---
 
-# Screenshots
+# 📸 Screenshots
 
-*(To be added)*
+> *(To be added after deployment)*
 
-- Upload Dashboard
-- Insights Dashboard
-- Charts
+- Login
+- Dashboard
+- Upload Statement
 - AI Summary
+- AI Chat
+- Budget Planner
+- Statement History
+- Insights Dashboard
 
 ---
 
-# Roadmap
+# 🚀 Getting Started
 
-## Completed
+## Clone the repository
 
-- [x] Authentication
-- [x] PDF Upload
-- [x] PDF Storage
-- [x] Transaction Extraction
-- [x] AI Categorization
-- [x] Insight Generation
-- [x] Dashboard APIs
-- [x] Upload Dashboard
-- [x] Dynamic Insights Page
-- [x] Recent Transactions
+```bash
+git clone https://github.com/yourusername/moneylens.git
+```
 
 ---
 
-## In Progress
+## Frontend
 
-- [ ] Charts
-- [ ] AI-generated monthly summary
-- [ ] Ask AI about spending
-- [ ] Dashboard polish
-- [ ] Landing page
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
 
 ---
 
-## Future Improvements
+## Backend
 
-- Server-side pagination
-- Search & filter transactions
-- CSV/Excel export
-- Multi-bank statement support
-- Budget tracking
+```bash
+cd backend
+
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# macOS/Linux
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+uvicorn main:app --reload
+```
+
+---
+
+# 🔑 Environment Variables
+
+## Frontend
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+
+NEXT_PUBLIC_API_URL=
+```
+
+## Backend
+
+```env
+SUPABASE_URL=
+
+SUPABASE_KEY=
+
+GEMINI_API_KEY=
+```
+
+---
+
+# 🚀 Deployment
+
+| Service | Platform |
+|----------|----------|
+| Frontend | Vercel |
+| Backend | Railway / Render |
+| Database | Supabase |
+| Storage | Supabase Storage |
+| AI | Google Gemini |
+
+---
+
+# ✅ Completed Features
+
+- Authentication
+- PDF Upload
+- Secure File Storage
+- PDF Text Extraction
+- AI Transaction Parsing
+- AI Transaction Categorization
+- Financial Insight Generation
+- AI Financial Summary
+- AI Chat Assistant
+- Budget Planner
+- Dashboard
+- Statement History
+- Delete Statements
+- Recent Transactions
+- Loading Skeletons
+- Toast Notifications
+- Protected Backend APIs
+
+---
+
+# 🔮 Future Improvements
+
+- Interactive charts
 - Monthly trend analysis
+- CSV / Excel export
+- Advanced transaction search
+- Filters & sorting
+- Multi-bank statement support
 - Spending forecasts
 - Recurring payment detection
-- AI financial recommendations
-- Mobile responsive optimization
+- Investment insights
+- Mobile optimization
 - Dark mode
 - Docker deployment
 
 ---
 
-# Why MoneyLens?
+# 📚 What I Learned
 
-Most banking applications simply display transactions.
+Building MoneyLens gave me hands-on experience with:
 
-MoneyLens focuses on helping users understand their financial behavior by combining document processing, AI-powered categorization, and intelligent financial insights into a single workflow.
+- Full-stack application architecture
+- Next.js App Router
+- FastAPI backend development
+- REST API design
+- PostgreSQL data modeling
+- Supabase Authentication & Storage
+- Google Gemini AI integration
+- AI-powered document processing
+- Component-driven React development
+- TypeScript best practices
 
 ---
 
-# Author
+# 🎯 Why MoneyLens?
 
-Mohak Bhattacharya
+Most banking applications simply display transactions.
+
+MoneyLens goes a step further by transforming raw financial data into meaningful insights using AI, helping users better understand their spending habits, identify trends, and make smarter financial decisions.
+
+---
+
+# 👨‍💻 Author
+
+**Mohak Bhattacharya**
 
 Computer Science Engineering Student
 
 KIIT University
+
+GitHub: https://github.com/mohakbh10
+
+LinkedIn: https://www.linkedin.com/in/mohak-bhattacharya-a74184285/
+
+---
+
+# 📄 License
+
+This project was built for educational and portfolio purposes.
