@@ -1,6 +1,8 @@
 from fastapi import Depends, APIRouter
-from pydantic import BaseModel
-
+from pydantic import (
+    BaseModel,
+    Field,
+)
 from dependencies.auth import (
     get_current_user,
 )
@@ -17,8 +19,18 @@ router = APIRouter()
 
 
 class ChatRequest(BaseModel):
-    upload_id: str
-    question: str
+    upload_id: str = Field(
+
+        min_length=1,
+
+    )
+    question: str = Field(
+
+        min_length=3,
+
+        max_length=300,
+
+    )
 
 
 

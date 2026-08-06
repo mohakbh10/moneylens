@@ -1,37 +1,35 @@
+
 from fastapi import (
-    Header,
+    Depends,
     HTTPException,
+)
+
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
 )
 
 from services.supabase_service import supabase
 
+# FastAPI Bearer authentication scheme
+security = HTTPBearer()
 
 def get_current_user(
-    authorization: str | None = Header(default=None)
+    credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     # Authorization header must look like:
     # Bearer <access_token>
 
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(
-            status_code=401,
-            detail="Missing or invalid authorization header",
-        )
-
-    token = authorization.removeprefix(
-        "Bearer "
-    ).strip()
-
+    token = credentials.credentials
+    print("TOKEN RECEIVED:")
+    print(token)
+    print()
     try:
 
         # Supabase verifies the JWT against
         # the project's signing keys.
-        response = (
-            supabase.auth.get_claims(
-                token
-            )
-        )
-
+        response = supabase.auth.get_claims(token)
+        print(response)
         claims = response.get(
             "claims"
         )
