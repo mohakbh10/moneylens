@@ -20,7 +20,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
     };
 
     checkUser();
-    }, []);
+    }, [router]);
 
     if (loading) return null;
     

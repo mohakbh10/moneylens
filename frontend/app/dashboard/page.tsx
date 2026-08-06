@@ -69,7 +69,7 @@ export default function DashboardPage() {
         <div className="mb-10">
           <h1 className="text-3xl font-bold">Welcome back 👋</h1>
           <p className="mt-2 text-muted-foreground">
-            Here's an overview of your financial activity.
+            Here&apos;s an overview of your financial activity.
           </p>
         </div>
 

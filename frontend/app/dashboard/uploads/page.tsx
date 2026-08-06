@@ -13,11 +13,6 @@ import { toast } from "sonner";
 import FadeIn from "@/components/animations/FadeIn";
 import { motion } from "framer-motion";
 
-type Upload = {
-    id: string;
-    file_name: string;
-    created_at: string;
-};
 
 export default function UploadsPage() {
     const [file, setFile] = useState<File | null>(null);
