@@ -1,7 +1,8 @@
 from services.supabase_client import supabase
+from fastapi import HTTPException
+from postgrest.exceptions import APIError
 
-
-def get_uploads():
+def get_uploads() -> list:
 
     response = (
         supabase
@@ -16,7 +17,7 @@ def get_uploads():
 
     return response.data
 
-def get_upload_by_id(upload_id: str):
+def get_upload_by_id(upload_id: str)-> dict | None:
     response = (
         supabase
         .table("uploads")
@@ -32,16 +33,23 @@ def get_upload_by_id_and_user(
     upload_id: str,
     user_id: str,
 ):
-
-    response = (
-        supabase
-        .table("uploads")
-        .select("*")
-        .eq("id", upload_id)
-        .eq("user_id", user_id)
-        .execute()
-    )
-
+    try:
+        response = (
+                supabase
+                .table("uploads")
+                .select("*")
+                .eq("id", upload_id)
+                .eq("user_id", user_id)
+                .execute()
+            )
+    except APIError as error:
+        if error.code == "22P02":
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid upload id."
+            )
+        raise
+    
     if response.data:
         return response.data[0]
 
@@ -80,17 +88,12 @@ def update_raw_text(
     )
 
 def download_pdf(file_path: str):
-
-    print("DOWNLOADING:", file_path)
-
     bucket = supabase.storage.from_("bank-statements")
 
     response = bucket.download(
         file_path
     )
 
-    print(type(response))
-    print(len(response))
 
     return response
 
@@ -105,7 +108,7 @@ def download_pdf(file_path: str):
 
     return response #returns bytes of the file to extract_text function
 """
-def get_raw_text(upload_id: str):
+def get_raw_text(upload_id: str)-> str:
 
     response = (
         supabase
@@ -133,7 +136,7 @@ def insert_transactions(
 
 def get_transactions_by_upload_id(
     upload_id: str
-):
+)-> list:
 
     response = (
         supabase
@@ -168,7 +171,7 @@ def update_transaction_category(
         .execute()
     )
 
-def save_insights(insight_data):
+def save_insights(insight_data)->list:
 
     response = (
         supabase
@@ -182,22 +185,25 @@ def save_insights(insight_data):
 def get_insight_by_upload_id(
     upload_id
 ):
+    try:
+        response = (
+                supabase
+                .table("insights")
+                .select("*")
+                .eq(
+                    "upload_id",
+                    upload_id
+                )
+                .execute()
+            )
+    except APIError:
 
-    response = (
-        supabase
-        .table("insights")
-        .select("*")
-        .eq(
-            "upload_id",
-            upload_id
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to fetch insights."
         )
-        .execute()
-    )
-
     if response.data:
-
         return response.data[0]
-
     return None
 
 def update_ai_summary(
@@ -241,23 +247,29 @@ def upsert_budget( #upsert means insert if not exists, else update
     amount: float,
     month: str,
 ):
-
-    response = (
-        supabase
-        .table("budgets")
-        .upsert(
-            {
-                "user_id": user_id,
-                "category": category,
-                "amount": amount,
-                "month": month,
-            },
-            on_conflict="user_id,category,month",
+    try:
+        response = (
+            supabase
+            .table("budgets")
+            .upsert(
+                {
+                    "user_id": user_id,
+                    "category": category,
+                    "amount": amount,
+                    "month": month,
+                },
+                on_conflict="user_id,category,month",
+            )
+            .execute()
         )
-        .execute()
-    )
 
-    return response.data
+        return response.data
+
+    except APIError:
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to save budget."
+        )
 
 def get_statement_history_by_user(
     user_id: str
@@ -333,35 +345,41 @@ def get_statement_history_by_user(
 def delete_statement(
     upload_id: str
 ):
+    try: 
+        # Delete insights
+        (
+            supabase
+            .table("insights")
+            .delete()
+            .eq("upload_id", upload_id)
+            .execute()
+        )
 
-    # Delete insights
-    (
-        supabase
-        .table("insights")
-        .delete()
-        .eq("upload_id", upload_id)
-        .execute()
-    )
+        # Delete transactions
+        (
+            supabase
+            .table("transactions")
+            .delete()
+            .eq("upload_id", upload_id)
+            .execute()
+        )
 
-    # Delete transactions
-    (
-        supabase
-        .table("transactions")
-        .delete()
-        .eq("upload_id", upload_id)
-        .execute()
-    )
+        # Delete upload row
+        response = (
+            supabase
+            .table("uploads")
+            .delete()
+            .eq("id", upload_id)
+            .execute()
+        )
 
-    # Delete upload row
-    response = (
-        supabase
-        .table("uploads")
-        .delete()
-        .eq("id", upload_id)
-        .execute()
-    )
-
-    return response.data
+        return response.data
+    except APIError:
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to delete statement."
+        )
+    
 #delete statement file from supabase storage
 def delete_statement_file(
     file_path: str
@@ -379,22 +397,27 @@ def delete_statement_file(
 def get_ai_summary(
     upload_id: str,
 ):
-
-    response = (
-        supabase
-        .table("insights")
-        .select("ai_summary")
-        .eq(
-            "upload_id",
-            upload_id,
+    try:
+        response = (
+            supabase
+            .table("insights")
+            .select("ai_summary")
+            .eq(
+                "upload_id",
+                upload_id,
+            )
+            .single()
+            .execute()
         )
-        .single()
-        .execute()
-    )
 
-    return response.data.get(
-        "ai_summary"
-    )
+        return response.data.get(
+            "ai_summary"
+        )
+    except APIError:
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to fetch AI summary."
+        )
 
 def update_ai_recommendations(
     upload_id: str,
