@@ -3,7 +3,10 @@ from fastapi import (
     Depends,
 )
 
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+    Field,
+)
 
 from dependencies.auth import (
     get_current_user,
@@ -17,11 +20,19 @@ from services.supabase_service import (
 
 router = APIRouter()
 
-
 class BudgetRequest(BaseModel):
-    category: str
-    amount: float
-    month: str
+    category: str = Field(
+        min_length=2,
+        max_length=40,
+
+    )
+    amount: float = Field(
+        gt=0,
+
+    )
+    month: str = Field(
+        pattern=r"^\d{4}-\d{2}$",
+    )
 
 
 @router.get("/budgets")

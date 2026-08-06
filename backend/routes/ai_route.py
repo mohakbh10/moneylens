@@ -1,7 +1,9 @@
 from services.ai_recommendation_service import generate_ai_recommendations
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
-
+from pydantic import (
+    BaseModel,
+    Field,
+)
 from services.ai_summary_service import (
     generate_ai_summary,
 )
@@ -17,9 +19,13 @@ from dependencies.upload_access import (
 
 router = APIRouter()
 
-
 class SummaryRequest(BaseModel):
-    upload_id: str
+
+    upload_id: str = Field(
+
+        min_length=1,
+
+    )
 
 
 @router.post("/ai-summary")

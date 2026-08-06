@@ -21,15 +21,11 @@ def get_current_user(
     # Bearer <access_token>
 
     token = credentials.credentials
-    print("TOKEN RECEIVED:")
-    print(token)
-    print()
     try:
 
         # Supabase verifies the JWT against
         # the project's signing keys.
         response = supabase.auth.get_claims(token)
-        print(response)
         claims = response.get(
             "claims"
         )
