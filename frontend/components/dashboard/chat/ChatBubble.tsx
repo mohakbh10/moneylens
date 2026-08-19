@@ -31,7 +31,9 @@ export default function ChatBubble({
                 className={`
                     flex
                     gap-3
-                    max-w-[85%]
+                    max-w-[92%]
+                    min-w-0
+                    sm:max-w-[85%]
                     ${isUser && "flex-row-reverse"}
                 `}
             >
@@ -62,6 +64,7 @@ export default function ChatBubble({
                         py-3
                         shadow-sm
                         whitespace-pre-wrap
+                        break-words
                         leading-7
                         ${
                             isUser

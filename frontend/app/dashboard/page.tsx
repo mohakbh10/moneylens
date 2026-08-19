@@ -50,7 +50,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
         <Skeleton className="h-10 w-64" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <Skeleton className="h-36 rounded-2xl" />
@@ -65,9 +65,9 @@ export default function DashboardPage() {
 
   return (
     <FadeIn>
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="mb-10">
-          <h1 className="text-3xl font-bold">Welcome back 👋</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Welcome back 👋</h1>
           <p className="mt-2 text-muted-foreground">
             Here&apos;s an overview of your financial activity.
           </p>

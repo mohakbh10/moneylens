@@ -26,7 +26,12 @@ export default function RootLayout({
         className={`${plusJakarta.variable}`}
       >
         {children}
-        <Toaster/>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            className: "max-w-[calc(100vw-2rem)]",
+          }}
+        />
       </body>
     </html>
   );

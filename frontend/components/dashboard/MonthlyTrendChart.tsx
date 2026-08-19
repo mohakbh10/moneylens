@@ -112,7 +112,7 @@ export default function MonthlyTrendChart({
 
     return (
 
-        <div className="border rounded-2xl bg-card p-5 shadow-sm">
+        <div className="border rounded-2xl bg-card p-4 sm:p-5 shadow-sm">
 
             {/* Chart Header */}
 
@@ -130,14 +130,14 @@ export default function MonthlyTrendChart({
 
             {/* Chart */}
 
-            <div className="h-72 w-full">
+            <div className="h-64 sm:h-72 w-full">
 
                 <ResponsiveContainer
                     width="100%"
                     height="100%"
                 >
 
-                    <LineChart data={chartData}>
+                    <LineChart data={chartData} margin={{ left: 0, right: 8 }}>
 
                         <CartesianGrid
                             strokeDasharray="3 3"

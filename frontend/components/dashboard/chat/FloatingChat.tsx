@@ -67,10 +67,14 @@ export default function FloatingChat({
         <div
             className="
                 fixed
-                bottom-6
-                right-6
-                w-105
-                h-150
+                bottom-4
+                right-4
+                w-[calc(100vw-2rem)]
+                h-[min(75dvh,37.5rem)]
+                sm:bottom-6
+                sm:right-6
+                sm:w-105
+                sm:h-150
                 rounded-3xl
                 border
                 bg-background
@@ -92,7 +96,7 @@ export default function FloatingChat({
                     items-center
                     justify-between
                     border-b
-                    px-5
+                    px-4 sm:px-5
                     py-4
                 "
             >

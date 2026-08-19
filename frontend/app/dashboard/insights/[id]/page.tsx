@@ -95,7 +95,7 @@ export default function InsightsPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 py-6 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-6 space-y-6 sm:space-y-8">
         <div className="space-y-3">
           <Skeleton className="h-9 w-72" />
           <Skeleton className="h-5 w-96" />
@@ -125,7 +125,7 @@ export default function InsightsPage() {
 
   if (!insight) {
     return (
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <h2 className="text-2xl font-semibold">Insight not found.</h2>
       </div>
     );
@@ -145,7 +145,7 @@ export default function InsightsPage() {
 
   return (
     <FadeIn>
-      <div className="max-w-5xl mx-auto px-6 py-5">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5">
         <button
           onClick={() => router.push("/dashboard/uploads")}
           className="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
@@ -155,34 +155,34 @@ export default function InsightsPage() {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">{statementMonth} Insights</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold break-words">{statementMonth} Insights</h1>
           <p className="text-muted-foreground mt-1">
             AI-powered analysis of your {statementMonth} bank statement.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <div className="bg-card border rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border rounded-2xl p-5 shadow-sm min-w-0">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">Total Income</p>
               <IndianRupee size={20} className="text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold mt-3 text-green-600">
+            <h2 className="text-2xl font-bold mt-3 text-green-600 break-words">
               {formatCurrency(insight.total_income)}
             </h2>
           </div>
 
-          <div className="bg-card border rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border rounded-2xl p-5 shadow-sm min-w-0">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">Total Expense</p>
               <Wallet size={20} className="text-red-500" />
             </div>
-            <h2 className="text-2xl font-bold mt-3 text-red-500">
+            <h2 className="text-2xl font-bold mt-3 text-red-500 break-words">
               {formatCurrency(insight.total_expense)}
             </h2>
           </div>
 
-          <div className="bg-card border rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border rounded-2xl p-5 shadow-sm min-w-0">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">Net Savings</p>
               <TrendingUp size={20} />
@@ -196,7 +196,7 @@ export default function InsightsPage() {
             </h2>
           </div>
 
-          <div className="bg-card border rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border rounded-2xl p-5 shadow-sm min-w-0">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">Transactions</p>
               <Receipt size={20} />
@@ -224,21 +224,21 @@ export default function InsightsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-card border rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border rounded-2xl p-5 shadow-sm min-w-0">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
                 Top Spending Category
               </p>
               <PieChart size={20} />
             </div>
-            <h2 className="text-2xl font-semibold mt-3">
+            <h2 className="text-2xl font-semibold mt-3 break-words">
               {insight.top_category}
             </h2>
           </div>
 
-          <div className="bg-card border rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border rounded-2xl p-5 shadow-sm min-w-0">
             <p className="text-sm text-muted-foreground">Largest Expense</p>
-            <h2 className="text-2xl font-bold mt-3">
+            <h2 className="text-2xl font-bold mt-3 break-words">
               {formatCurrency(insight.largest_expense)}
             </h2>
             <p className="text-sm text-muted-foreground mt-3 line-clamp-2">

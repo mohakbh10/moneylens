@@ -146,7 +146,7 @@ export default function UploadsPage() {
 
     return (
         <FadeIn>
-        <div className="max-w-3xl mx-auto px-6 py-10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
             {/* Header */}
 
@@ -190,7 +190,7 @@ export default function UploadsPage() {
                     className={`
                         flex flex-col items-center justify-center gap-3
                         border-2 border-dashed border-border
-                        rounded-xl px-6 py-10 mb-4
+                        rounded-xl px-4 sm:px-6 py-8 sm:py-10 mb-4
                         transition-colors
                         ${
                             loading
@@ -221,9 +221,11 @@ export default function UploadsPage() {
 
                         <p className="text-sm font-medium">
 
-                            {file
-                                ? file.name
-                                : "Click to choose a file"}
+                            <span className="block max-w-full break-all">
+                                {file
+                                    ? file.name
+                                    : "Click to choose a file"}
+                            </span>
 
                         </p>
 

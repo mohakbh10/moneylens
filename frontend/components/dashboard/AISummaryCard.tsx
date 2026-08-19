@@ -8,16 +8,16 @@ export default function AISummaryCard({
     summary,
 }: Props) {
     return (
-        <div className="bg-card border rounded-2xl p-6 shadow-sm">
+        <div className="bg-card border rounded-2xl p-4 sm:p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
                 <span className="text-2xl">🤖</span>
 
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-xl font-semibold break-words">
                     AI Financial Summary
                 </h2>
             </div>
 
-            <p className="text-muted-foreground leading-7 whitespace-pre-wrap">
+            <p className="text-muted-foreground leading-7 whitespace-pre-wrap break-words">
                 {summary}
             </p>
         </div>

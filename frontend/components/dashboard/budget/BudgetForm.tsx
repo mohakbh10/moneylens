@@ -94,7 +94,7 @@ export default function BudgetForm({
                         e.target.value
                     )
                 }
-                className="rounded-xl border bg-background px-4 py-2 text-sm"
+                className="w-full rounded-xl border bg-background px-4 py-2 text-sm sm:w-auto"
             >
 
                 {categories.map(
@@ -124,11 +124,12 @@ export default function BudgetForm({
                     )
                 }
                 placeholder="Monthly budget"
-                className="flex-1 rounded-xl border bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+                className="w-full flex-1 rounded-xl border bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
             />
 
             <Button
                 onClick={handleSave}
+                className="w-full sm:w-auto"
                 disabled={
                     saving ||
                     !amount ||

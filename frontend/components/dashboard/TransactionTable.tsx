@@ -40,7 +40,8 @@ export default function TransactionTable({
             No transactions found.
           </div>
         ) : (
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[620px]">
             <thead className="sticky top-0 bg-muted z-10">
               <tr className="text-left">
                 <th className="px-4 py-3 text-sm">Date</th>
@@ -98,18 +99,19 @@ export default function TransactionTable({
               ))}
             </tbody>
           </table>
+          </div>
         )}
 
         {/* Page navigation for transactions */}
         {transactions.length > 0 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t bg-card">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 py-3 border-t bg-card">
             <p className="text-sm text-muted-foreground">
               Showing {startIndex + 1}–
               {Math.min(startIndex + rowsPerPage, transactions.length)} of{" "}
               {transactions.length}
             </p>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"

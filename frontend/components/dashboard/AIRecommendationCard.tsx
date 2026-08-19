@@ -15,9 +15,9 @@ export default function AIRecommendationCard({
     const hasRecommendations = items.length > 0;
     return (
 
-        <div className="bg-card border rounded-2xl p-6 shadow-sm">
+        <div className="bg-card border rounded-2xl p-4 sm:p-6 shadow-sm">
 
-            <h2 className="text-xl font-semibold flex items-center gap-2 mb-5">
+            <h2 className="text-xl font-semibold flex items-center gap-2 mb-5 break-words">
 
                 <Lightbulb
                     className="text-yellow-500"
@@ -35,7 +35,7 @@ export default function AIRecommendationCard({
                                 className="flex gap-3"
                             >
                                 <div className="mt-1 h-2 w-2 rounded-full bg-yellow-500" />
-                                <p className="text-sm leading-7">
+                                <p className="text-sm leading-7 break-words min-w-0">
                                     {item.replace(/^[*•-]\s*/, "")}
                                 </p>
                             </div>

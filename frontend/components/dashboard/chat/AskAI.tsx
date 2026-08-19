@@ -120,7 +120,7 @@ export default function AskAI({
 
             {/* Chat */}
 
-            <div className="flex-1 overflow-y-auto space-y-5 p-6">
+            <div className="flex-1 overflow-y-auto space-y-5 p-4 sm:p-6">
 
                 {messages.map((message, index) => (
 
@@ -147,7 +147,7 @@ export default function AskAI({
 
             {/* Suggestions */}
 
-            <div className="border-t px-5 py-4">
+            <div className="border-t px-4 sm:px-5 py-4">
 
                 <div className="flex flex-wrap gap-2">
 
@@ -179,7 +179,7 @@ export default function AskAI({
 
             {/* Input */}
 
-            <div className="border-t p-4 flex gap-3">
+            <div className="border-t p-3 sm:p-4 flex gap-2 sm:gap-3">
 
                 <input
                     value={question}
@@ -200,6 +200,7 @@ export default function AskAI({
                     placeholder="Ask MoneyLens AI..."
                     className="
                         flex-1
+                        min-w-0
                         rounded-xl
                         border
                         px-4
@@ -213,7 +214,7 @@ export default function AskAI({
                 <Button
                     onClick={handleAsk}
                     disabled={loading || !question.trim()}
-                    className="px-6 mt-1.5"
+                    className="shrink-0 px-4 sm:px-6 mt-1.5"
                 >
                     {loading ? "..." : "➜"}
                 </Button>

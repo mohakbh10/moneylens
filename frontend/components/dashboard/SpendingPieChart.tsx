@@ -62,7 +62,7 @@ export default function SpendingPieChart({
 
     return (
 
-        <div className="bg-card border rounded-2xl p-6 shadow-sm">
+        <div className="bg-card border rounded-2xl p-4 sm:p-6 shadow-sm">
 
             <h2 className="text-xl font-semibold mb-6">
 
@@ -70,7 +70,7 @@ export default function SpendingPieChart({
 
             </h2>
 
-            <div className="h-80">
+            <div className="h-64 sm:h-80">
 
                 <ResponsiveContainer
                     width="100%"
@@ -83,7 +83,7 @@ export default function SpendingPieChart({
                             data={data}
                             dataKey="value"
                             nameKey="name"
-                            outerRadius={110}
+                            outerRadius={95}
                             label
                         >
 

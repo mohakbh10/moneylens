@@ -29,10 +29,10 @@ export default function BudgetCard({
         spent > budget;
 
     return (
-        <div className="border rounded-2xl bg-card p-5 shadow-sm">
+        <div className="border rounded-2xl bg-card p-5 shadow-sm min-w-0">
 
             {/* Category + percentage */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
 
                 <h3 className="font-semibold">
                     {category}
@@ -47,11 +47,11 @@ export default function BudgetCard({
             {/* Amount spent */}
             <div className="mt-3">
 
-                <span className="text-lg font-semibold">
+                <span className="text-lg font-semibold break-words">
                     {formatCurrency(spent)}
                 </span>
 
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-muted-foreground break-words">
                     {" "}of {formatCurrency(budget)}
                 </span>
 

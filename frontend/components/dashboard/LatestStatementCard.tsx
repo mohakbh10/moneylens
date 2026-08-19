@@ -34,7 +34,7 @@ export default function LatestStatementCard({
           <h3 className="text-2xl font-semibold">
             {formatStatementMonth(latestStatement.statement_month)}
           </h3>
-          <p className="mt-2 text-muted-foreground">{latestStatement.file_name}</p>
+          <p className="mt-2 text-muted-foreground break-words">{latestStatement.file_name}</p>
           <p className="text-sm text-muted-foreground mt-1">
             Uploaded {new Date(latestStatement.created_at).toLocaleDateString()}
           </p>
@@ -42,16 +42,16 @@ export default function LatestStatementCard({
             {latestStatement.transaction_count} transactions analyzed
           </p>
 
-          <div className="mt-8 grid grid-cols-2 gap-4">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-xl border border-border bg-muted/30 p-4">
               <p className="text-xs text-muted-foreground">Income</p>
-              <p className="text-lg font-semibold text-green-600">
+              <p className="text-lg font-semibold text-green-600 break-words">
                 {formatCurrency(latestInsight?.total_income ?? 0)}
               </p>
             </div>
             <div className="rounded-xl border border-border bg-muted/30 p-4">
               <p className="text-xs text-muted-foreground">Expense</p>
-              <p className="text-lg font-semibold text-red-600">
+              <p className="text-lg font-semibold text-red-600 break-words">
                 {formatCurrency(latestInsight?.total_expense ?? 0)}
               </p>
             </div>

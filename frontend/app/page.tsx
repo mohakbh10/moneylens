@@ -20,11 +20,11 @@ export default function HomePage() {
       {/* ================= Navbar ================= */}
 
       <nav className="border-b">
-        <div className="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-3">
 
           <Link
             href="/"
-            className="text-2xl font-bold"
+            className="text-xl sm:text-2xl font-bold whitespace-nowrap"
           >
             💸 MoneyLens
           </Link>
@@ -64,7 +64,7 @@ export default function HomePage() {
 
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           {/* Left */}
 
@@ -78,7 +78,7 @@ export default function HomePage() {
 
             </span>
 
-            <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
 
               Understand Your
 
@@ -94,7 +94,7 @@ export default function HomePage() {
 
             </h1>
 
-            <p className="mt-8 text-lg text-muted-foreground max-w-xl leading-8">
+            <p className="mt-6 sm:mt-8 text-base sm:text-lg text-muted-foreground max-w-xl leading-7 sm:leading-8">
 
               Upload your bank statement and let MoneyLens automatically
               extract transactions, categorize spending with AI,
@@ -137,7 +137,7 @@ export default function HomePage() {
 
           <div>
 
-            <div className="rounded-3xl border bg-card shadow-xl p-8">
+            <div className="rounded-3xl border bg-card shadow-xl p-5 sm:p-8">
 
               <h2 className="text-xl font-semibold">
 
@@ -145,7 +145,7 @@ export default function HomePage() {
 
               </h2>
 
-              <div className="grid grid-cols-2 gap-4 mt-8">
+              <div className="grid grid-cols-1 min-[390px]:grid-cols-2 gap-4 mt-6 sm:mt-8">
 
                 <div className="rounded-xl border p-5">
 
@@ -243,10 +243,10 @@ export default function HomePage() {
 
       <section
         id="features"
-        className="max-w-7xl mx-auto px-6 py-20"
+        className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20"
       >
 
-        <h2 className="text-4xl font-bold text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center">
 
           Everything You Need
 
@@ -258,7 +258,7 @@ export default function HomePage() {
 
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-14">
+        <div className="grid md:grid-cols-3 gap-6 mt-10 sm:mt-14">
 
           <FeatureCard
             icon={<CreditCard className="h-8 w-8 text-primary" />}
@@ -289,15 +289,15 @@ export default function HomePage() {
         className="bg-muted/30 py-20"
       >
 
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-          <h2 className="text-4xl font-bold text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center">
 
             How MoneyLens Works
 
           </h2>
 
-          <div className="grid md:grid-cols-5 gap-6 mt-14 text-center">
+          <div className="grid md:grid-cols-5 gap-4 sm:gap-6 mt-10 sm:mt-14 text-center">
 
             {[
               "Upload PDF",
@@ -332,16 +332,16 @@ export default function HomePage() {
 
       <section
         id="tech"
-        className="max-w-6xl mx-auto px-6 py-20"
+        className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20"
       >
 
-        <h2 className="text-4xl font-bold text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center">
 
           Built With
 
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mt-10 sm:mt-14">
 
           <TechCard icon={<Wallet />} title="Next.js" />
           <TechCard icon={<Database />} title="Supabase" />
@@ -354,11 +354,11 @@ export default function HomePage() {
 
       {/* ================= CTA ================= */}
 
-      <section className="max-w-5xl mx-auto px-6 pb-20">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
 
-        <div className="rounded-3xl border bg-card p-12 text-center">
+        <div className="rounded-3xl border bg-card p-6 sm:p-12 text-center">
 
-          <h2 className="text-4xl font-bold">
+          <h2 className="text-3xl sm:text-4xl font-bold">
 
             Ready to Understand Your Spending?
 
@@ -393,7 +393,7 @@ export default function HomePage() {
 
       <footer className="border-t">
 
-        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
 
           <div>
 

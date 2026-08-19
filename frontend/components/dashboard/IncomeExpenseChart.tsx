@@ -31,20 +31,20 @@ export default function IncomeExpenseChart({
     ];
 
     return (
-        <div className="bg-card border rounded-2xl p-6 shadow-sm">
+        <div className="bg-card border rounded-2xl p-4 sm:p-6 shadow-sm">
 
             <h2 className="text-xl font-semibold mb-6">
                 Income vs Expense
             </h2>
 
-            <div className="h-80">
+            <div className="h-64 sm:h-80">
 
                 <ResponsiveContainer
                     width="100%"
                     height="100%"
                 >
 
-                    <BarChart data={data}>
+                    <BarChart data={data} margin={{ left: 0, right: 8 }}>
 
                         <XAxis dataKey="name" />
 

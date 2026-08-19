@@ -88,7 +88,7 @@ export default function StatementHistory() {
             >
                 {/* Header */}
 
-                <div className="px-5 py-4 border-b">
+                <div className="px-4 sm:px-5 py-4 border-b">
                     <Skeleton className="h-6 w-48" />
                     <Skeleton className="h-4 w-72 mt-3" />
                 </div>
@@ -100,7 +100,7 @@ export default function StatementHistory() {
                             flex
                             items-center
                             justify-between
-                            px-5
+                            px-4 sm:px-5
                             py-4
                             border-b
                         "
@@ -167,7 +167,7 @@ export default function StatementHistory() {
     return (
         <div className="border rounded-2xl bg-card overflow-hidden">
 
-            <div className="px-5 py-4 border-b">
+            <div className="px-4 sm:px-5 py-4 border-b">
 
                 <h2 className="text-lg font-semibold">
                     Your Statements
@@ -240,7 +240,7 @@ export default function StatementHistory() {
                                 flex
                                 items-center
                                 gap-3
-                                px-5
+                                px-4 sm:px-5
                                 py-4
                                 border-b
                                 last:border-b-0
@@ -292,9 +292,9 @@ export default function StatementHistory() {
 
                                     <div className="min-w-0">
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex flex-wrap items-center gap-2">
 
-                                            <p className="font-semibold">
+                                            <p className="font-semibold break-words">
 
                                                 {formatStatementMonth(
                                                     upload.statement_month
