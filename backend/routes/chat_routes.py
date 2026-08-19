@@ -3,6 +3,7 @@ from pydantic import (
     BaseModel,
     Field,
 )
+from uuid import UUID
 from dependencies.auth import (
     get_current_user,
 )
@@ -19,11 +20,7 @@ router = APIRouter()
 
 
 class ChatRequest(BaseModel):
-    upload_id: str = Field(
-
-        min_length=1,
-
-    )
+    upload_id: UUID
     question: str = Field(
 
         min_length=3,
@@ -42,10 +39,10 @@ def ask_ai_route(
 ):
 
     verify_upload_access(
-        request.upload_id,
+        str(request.upload_id),
         user["sub"],
     )
     return ask_ai(
-        request.upload_id,
+        str(request.upload_id),
         request.question,
     )

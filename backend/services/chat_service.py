@@ -1,7 +1,5 @@
-from services.gemini_client import (
-    client,
-    MODEL,
-)
+from services.gemini_client import generate_content
+from fastapi import HTTPException
 
 from services.supabase_service import (
     get_insight_by_upload_id,
@@ -14,6 +12,12 @@ def ask_ai(upload_id, question):
     insight = get_insight_by_upload_id(
         upload_id
     )
+
+    if not insight:
+        raise HTTPException(
+            status_code=404,
+            detail="Statement analysis not found.",
+        )
 
     transactions = (
         get_transactions_by_upload_id(
@@ -112,11 +116,6 @@ def ask_ai(upload_id, question):
     - Keep responses under 150 words.
     - Use a friendly conversational tone.
     """
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=prompt,
-    )
-
     return {
-        "answer": response.text
+        "answer": generate_content(contents=prompt)
     }

@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 
 
 export default function UploadsPage() {
+    const maxPdfBytes = 10 * 1024 * 1024;
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
@@ -23,6 +24,29 @@ export default function UploadsPage() {
     const handleUpload = async () => {
         if (!file) {
             toast.error("Please select a PDF statement first.");
+            return;
+        }
+
+        const fileName = file.name.toLowerCase();
+        const allowedMimeTypes = ["application/pdf", "application/x-pdf"];
+
+        if (!fileName.endsWith(".pdf")) {
+            toast.error("Please select a PDF statement.");
+            return;
+        }
+
+        if (file.type && !allowedMimeTypes.includes(file.type)) {
+            toast.error("Please select a valid PDF statement.");
+            return;
+        }
+
+        if (file.size === 0) {
+            toast.error("The selected PDF is empty.");
+            return;
+        }
+
+        if (file.size > maxPdfBytes) {
+            toast.error("PDF statements must be 10 MB or smaller.");
             return;
         }
 

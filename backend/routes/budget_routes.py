@@ -7,6 +7,7 @@ from pydantic import (
     BaseModel,
     Field,
 )
+from typing import Annotated
 
 from dependencies.auth import (
     get_current_user,
@@ -20,6 +21,8 @@ from services.supabase_service import (
 
 router = APIRouter()
 
+Month = Annotated[str, Field(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")]
+
 class BudgetRequest(BaseModel):
     category: str = Field(
         min_length=2,
@@ -30,14 +33,12 @@ class BudgetRequest(BaseModel):
         gt=0,
 
     )
-    month: str = Field(
-        pattern=r"^\d{4}-\d{2}$",
-    )
+    month: Month
 
 
 @router.get("/budgets")
 def get_budgets(
-    month: str,
+    month: Month,
     user=Depends(get_current_user),
 ):
 

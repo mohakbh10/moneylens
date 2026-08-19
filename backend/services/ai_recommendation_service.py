@@ -8,10 +8,8 @@ from services.recommendation_prompt import (
     build_recommendation_prompt,
 )
 
-from services.gemini_client import (
-    client,
-    MODEL,
-)
+from services.gemini_client import generate_content
+from fastapi import HTTPException
 
 
 def generate_ai_recommendations(
@@ -23,8 +21,9 @@ def generate_ai_recommendations(
     )
 
     if not insight:
-        raise Exception(
-            "Insight not found"
+        raise HTTPException(
+            status_code=404,
+            detail="Statement analysis not found.",
         )
 
     if insight.get(
@@ -51,16 +50,7 @@ def generate_ai_recommendations(
         )
     )
 
-    response = (
-        client.models.generate_content(
-            model=MODEL,
-            contents=prompt,
-        )
-    )
-
-    recommendations = (
-        response.text.strip()
-    )
+    recommendations = generate_content(contents=prompt)
 
     update_ai_recommendations(
         upload_id,

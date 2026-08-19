@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import (
     CORSMiddleware
 )
-
-from services.supabase_client import supabase
+import os
 
 from routes.process_route import (
     router as process_router
@@ -22,12 +21,14 @@ from routes.budget_routes import router as budget_router
 
 app = FastAPI()
 
+allowed_origins = ["http://localhost:3000"]
+production_origin = os.getenv("FRONTEND_ORIGIN")
+if production_origin:
+    allowed_origins.append(production_origin.rstrip("/"))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-    "http://localhost:3000",
-    "https://moneylens.vercel.app",
-],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

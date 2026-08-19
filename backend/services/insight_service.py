@@ -1,3 +1,20 @@
+from pydantic import BaseModel, Field
+
+
+class InsightData(BaseModel):
+    total_income: float
+    total_expense: float
+    net_savings: float
+    top_category: str = Field(min_length=1, max_length=100)
+    largest_expense: float = Field(ge=0)
+    largest_expense_description: str
+    transaction_count: int = Field(ge=1)
+
+
+def validate_insights(insights: dict) -> dict:
+    return InsightData.model_validate(insights).model_dump()
+
+
 def generate_insights(
     transactions
 ):

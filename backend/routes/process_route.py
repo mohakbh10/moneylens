@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter, HTTPException
+from uuid import uuid4
 
 from dependencies.auth import (
     get_current_user,
@@ -13,12 +14,10 @@ from models.transaction_request import (
 )
 
 from services.supabase_service import (
-    get_upload_by_id,
     download_pdf,
     update_raw_text,
+    clear_processed_statement_data,
     insert_transactions,
-    get_transactions_by_upload_id,
-    update_transaction_category,
     save_insights
 )
 
@@ -32,7 +31,13 @@ from services.ai_service import (
 )
 
 from services.insight_service import (
-    generate_insights
+    generate_insights,
+    validate_insights,
+)
+
+from services.statement_validation import (
+    validate_extracted_text,
+    validate_pdf_bytes,
 )
 
 router = APIRouter()
@@ -45,22 +50,25 @@ def process_statement(
     user=Depends(get_current_user),
 ):
 
-    verify_upload_access(
-        request.upload_id,
+    upload = verify_upload_access(
+        str(request.upload_id),
         user["sub"],
-    )
-
-    upload = get_upload_by_id(
-        request.upload_id
     )
     pdf_bytes = download_pdf(
         upload["file_url"]
     )
+    validate_pdf_bytes(pdf_bytes)
     raw_text = extract_text(
         pdf_bytes
     )
+    validate_extracted_text(raw_text)
+    if not raw_text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="No readable text was found in this PDF.",
+        )
     update_raw_text(
-        request.upload_id,
+        str(request.upload_id),
         raw_text
     )
     transactions = (
@@ -76,44 +84,45 @@ def process_statement(
                 "Please upload a valid bank statement."
             ),
         )
+    new_transactions = []
     for transaction in transactions:
+        new_transactions.append({
+            **transaction,
+            "id": str(uuid4()),
+            "upload_id": str(request.upload_id),
+            "category": None,
+        })
 
-        transaction[
-            "upload_id"
-        ] = request.upload_id
-    insert_transactions(
-        transactions
-    )
-    transactions = (
-        get_transactions_by_upload_id(
-            request.upload_id
-        )
-    )
     categories = (
         categorize_transactions(
-            transactions
+            new_transactions
         )
     )
-    for item in categories:
 
-        update_transaction_category(
-            item["id"],
-            item["category"]
+    categories_by_id = {
+        item["id"]: item["category"]
+        for item in categories
+    }
+    for transaction in new_transactions:
+        transaction["category"] = categories_by_id.get(
+            transaction["id"],
+            "Other",
         )
-    transactions = (
-        get_transactions_by_upload_id(
-            request.upload_id
-        )
-    )
-    insights = (
+
+    insights = validate_insights(
         generate_insights(
-            transactions
+            new_transactions
         )
     )
     insights[
         "upload_id"
-    ] = request.upload_id
+    ] = str(request.upload_id)
 
+    # All AI/parsing/calculation work has completed. Only now replace prior data.
+    clear_processed_statement_data(str(request.upload_id))
+    insert_transactions(
+        new_transactions
+    )
     save_insights(
         insights
     )

@@ -87,6 +87,24 @@ def update_raw_text(
         .execute()
     )
 
+
+def clear_processed_statement_data(upload_id: str):
+    """Remove prior derived data before reprocessing an owned statement."""
+    (
+        supabase
+        .table("insights")
+        .delete()
+        .eq("upload_id", upload_id)
+        .execute()
+    )
+    (
+        supabase
+        .table("transactions")
+        .delete()
+        .eq("upload_id", upload_id)
+        .execute()
+    )
+
 def download_pdf(file_path: str):
     bucket = supabase.storage.from_("bank-statements")
 

@@ -1,12 +1,8 @@
 from pydantic import (
     BaseModel,
-    Field,
 )
+from uuid import UUID
 
 class TransactionRequest(BaseModel):
 
-    upload_id: str = Field(
-
-        min_length=1,
-
-    )
+    upload_id: UUID

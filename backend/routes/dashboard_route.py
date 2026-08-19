@@ -2,13 +2,13 @@ from dependencies.upload_access import (
     verify_upload_access,
 )
 from fastapi import APIRouter, Depends
+from uuid import UUID
 
 from services.supabase_service import (
     get_insight_by_upload_id,
     get_transactions_by_upload_id,
     get_uploads_by_user,
     get_statement_history_by_user,
-    get_upload_by_id,
     delete_statement,
     delete_statement_file,
 )
@@ -23,19 +23,19 @@ router = APIRouter()
     "/insights/{upload_id}"
 )
 def get_insight(
-    upload_id: str,
+    upload_id: UUID,
     user=Depends(get_current_user),
 ):
 
     user_id = user["sub"]
 
     verify_upload_access(
-        upload_id,
+        str(upload_id),
         user_id,
     )
 
     return get_insight_by_upload_id(
-        upload_id
+        str(upload_id)
     )
 
 
@@ -43,19 +43,19 @@ def get_insight(
     "/transactions/{upload_id}"
 )
 def get_transactions(
-    upload_id: str,
+    upload_id: UUID,
     user=Depends(get_current_user),
 ):
 
     user_id = user["sub"]
 
     verify_upload_access(
-        upload_id,
+        str(upload_id),
         user_id,
     )
 
     return get_transactions_by_upload_id(
-        upload_id
+        str(upload_id)
     )
 
 @router.get(
@@ -89,19 +89,15 @@ def get_statement_history(
     "/statements/{upload_id}"
 )
 def delete_statement_route(
-    upload_id: str,
+    upload_id: UUID,
     user=Depends(get_current_user),
 ):
 
     user_id = user["sub"]
 
-    verify_upload_access(
-        upload_id,
+    upload = verify_upload_access(
+        str(upload_id),
         user_id,
-    )
-
-    upload = get_upload_by_id(
-        upload_id
     )
 
     if upload.get("file_url"):
@@ -111,7 +107,7 @@ def delete_statement_route(
         )
 
     delete_statement(
-        upload_id
+        str(upload_id)
     )
 
     return {

@@ -401,6 +401,19 @@ GEMINI_API_KEY=
 
 ---
 
+# 🔐 Security and Data Isolation
+
+- **Supabase Auth:** Users authenticate with Supabase; the frontend uses only the public anon key.
+- **FastAPI verification:** Protected API requests include the Supabase access token. FastAPI verifies its claims and uses the authenticated user ID for every user-scoped operation.
+- **Statement ownership:** Every active endpoint that receives an upload ID confirms the statement belongs to the authenticated user before it reads, processes, sends data to AI, or deletes it.
+- **PostgreSQL RLS:** Row Level Security isolates uploads, transactions, insights, budgets, and chat messages to their owner or to records linked to an owned upload.
+- **Private Storage:** Bank statements stay in the private `bank-statements` bucket. Storage policies limit access to objects whose first path segment is the authenticated user's ID.
+- **Secrets:** `GEMINI_API_KEY` and any Supabase service-role key remain backend-only. Never expose them through `NEXT_PUBLIC_*` variables or commit local environment files.
+
+Configure `FRONTEND_ORIGIN` in the backend environment with the exact deployed frontend origin. Local development continues to allow `http://localhost:3000`.
+
+---
+
 # 🚀 Deployment
 
 | Service | Platform |

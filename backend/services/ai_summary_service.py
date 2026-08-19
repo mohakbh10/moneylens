@@ -8,14 +8,18 @@ from services.prompt_builder import (
     build_summary_prompt,
 )
 
-from services.gemini_client import client, MODEL
+from services.gemini_client import generate_content
+from fastapi import HTTPException
 
 def generate_ai_summary(upload_id: str):
 
     insight = get_insight_by_upload_id(upload_id)
 
     if not insight:
-        raise Exception("Insight not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Statement analysis not found.",
+        )
 
     # Already cached?
     if insight.get("ai_summary"):
@@ -28,12 +32,7 @@ def generate_ai_summary(upload_id: str):
         transactions,
     )
 
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=prompt,
-    )
-
-    summary = response.text.strip()
+    summary = generate_content(contents=prompt)
     update_ai_summary(
         upload_id,
         summary,

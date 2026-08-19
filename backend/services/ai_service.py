@@ -1,5 +1,45 @@
 import json
-from services.gemini_client import client, MODEL
+from typing import Literal
+
+from fastapi import HTTPException
+from pydantic import BaseModel, Field, ValidationError
+
+from services.gemini_client import generate_content
+
+
+class ExtractedTransaction(BaseModel):
+    transaction_date: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
+    description: str = Field(min_length=1, max_length=1_000)
+    amount: float = Field(gt=0)
+    transaction_type: Literal["credit", "debit"]
+
+
+class TransactionCategory(BaseModel):
+    id: str = Field(min_length=1)
+    category: Literal[
+        "Food",
+        "Transport",
+        "Shopping",
+        "Bills",
+        "Education",
+        "Entertainment",
+        "Income",
+        "Transfer",
+        "Other",
+    ]
+
+
+def parse_ai_json(raw_response: str, item_model: type[BaseModel]) -> list[dict]:
+    try:
+        payload = json.loads(raw_response)
+        if not isinstance(payload, list):
+            raise ValueError("Expected a JSON array.")
+        return [item_model.model_validate(item).model_dump() for item in payload]
+    except (json.JSONDecodeError, ValidationError, ValueError, TypeError) as error:
+        raise HTTPException(
+            status_code=502,
+            detail="AI returned an invalid statement analysis. Please try again.",
+        ) from error
 
 def extract_transactions(raw_text: str):
 
@@ -48,25 +88,12 @@ Statement:
 {raw_text}
 """
 
-    response = client.models.generate_content(
-        model=MODEL,
+    response = generate_content(
         contents=prompt,
+        response_mime_type="application/json",
     )
 
-    cleaned = response.text.strip()
-
-    if cleaned.startswith("```json"):
-        cleaned = cleaned.replace(
-            "```json",
-            ""
-        )
-
-    if cleaned.endswith("```"):
-        cleaned = cleaned[:-3]
-
-    return json.loads(
-        cleaned.strip()
-    )
+    return parse_ai_json(response, ExtractedTransaction)
 
 def categorize_transactions(
     transactions
@@ -103,22 +130,18 @@ Transactions:
 {transactions}
 """
 
-    response = client.models.generate_content(
-        model=MODEL,
+    response = generate_content(
         contents=prompt,
+        response_mime_type="application/json",
     )
 
-    cleaned = response.text.strip()
+    categories = parse_ai_json(response, TransactionCategory)
+    transaction_ids = {str(transaction["id"]) for transaction in transactions}
 
-    if cleaned.startswith("```json"):
-        cleaned = cleaned.replace(
-            "```json",
-            ""
+    if any(category["id"] not in transaction_ids for category in categories):
+        raise HTTPException(
+            status_code=502,
+            detail="AI returned an invalid statement analysis. Please try again.",
         )
 
-    if cleaned.endswith("```"):
-        cleaned = cleaned[:-3]
-
-    return json.loads(
-        cleaned.strip()
-    )
+    return categories
