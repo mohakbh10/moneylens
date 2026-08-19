@@ -58,7 +58,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
             {/* Sidebar */}
             <aside className={`
                 fixed inset-y-0 left-0 z-40 w-64 bg-white border-r p-6 transform transition-transform duration-200 ease-in-out
-                md:relative md:translate-x-0
+                md:translate-x-0
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <h2 className="hidden md:block font-bold text-xl mb-8 text-emerald-600">
@@ -103,7 +103,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 min-w-0 p-4 md:p-8">
+            <main className="flex-1 min-w-0 p-4 md:ml-64 md:p-8">
                 <div className="max-w-7xl mx-auto">
                     {children}
                 </div>
