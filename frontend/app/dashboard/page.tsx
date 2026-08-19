@@ -1,7 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Upload, History, Wallet } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Button } from "@/components/ui/button";
 import { getStatementHistory, getInsights } from "@/lib/api";
 import type { StatementHistoryItem } from "@/types/statement";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,9 +28,11 @@ export default function DashboardPage() {
   const [statements, setStatements] = useState<StatementHistoryItem[]>([]);
   const [latestInsight, setLatestInsight] = useState<Insight | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    const loadData = async () => {
+  const loadData = useCallback(async () => {
+      setLoading(true);
+      setError("");
       try {
         const uploads = await getStatementHistory();
         setStatements(uploads);
@@ -41,12 +44,15 @@ export default function DashboardPage() {
         }
       } catch {
         console.error("Failed to load dashboard");
+        setError("Unable to load your dashboard. Please try again.");
       } finally {
         setLoading(false);
       }
-    };
-    loadData();
   }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (loading) {
     return (
@@ -59,6 +65,15 @@ export default function DashboardPage() {
         </div>
         <Skeleton className="h-72 rounded-2xl" />
         <Skeleton className="h-60 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <p className="text-muted-foreground">{error}</p>
+        <Button className="mt-4" onClick={loadData}>Try again</Button>
       </div>
     );
   }

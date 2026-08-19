@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     FileText,
@@ -11,6 +11,7 @@ import {
 import {
     getStatementHistory,
     deleteStatement,
+    processStatement,
 } from "@/lib/api";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 function formatStatementMonth(
     month: string | null
@@ -44,12 +46,15 @@ export default function StatementHistory() {
     const router = useRouter();
     const [uploads, setUploads] = useState<StatementHistoryItem[]>([]);
     const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [processingId, setProcessingId] = useState<string | null>(null);
     const [loading, setLoading] =
         useState(true);
+    const [error, setError] = useState("");
 
-    useEffect(() => {
+    const loadUploads = useCallback(async () => {
 
-        const loadUploads = async () => {
+        setLoading(true);
+        setError("");
 
             try {
 
@@ -62,6 +67,7 @@ export default function StatementHistory() {
             catch {
 
                 console.error("Failed to load statement history");
+                setError("Unable to load your statements. Please try again.");
 
             }
             finally {
@@ -70,11 +76,11 @@ export default function StatementHistory() {
 
             }
 
-        };
-
-        loadUploads();
-
     }, []);
+
+    useEffect(() => {
+        loadUploads();
+    }, [loadUploads]);
 
     if (loading) {
         return (
@@ -150,11 +156,13 @@ export default function StatementHistory() {
                         upload.id !== uploadId
                 )
             );
+            toast.success("Statement deleted.");
 
         }
         catch {
 
             console.error("Failed to delete statement");
+            toast.error("Unable to delete this statement. Please try again.");
 
         }
         finally {
@@ -163,6 +171,19 @@ export default function StatementHistory() {
 
         }
 
+    }
+    async function handleRetry(uploadId: string) {
+        try {
+            setProcessingId(uploadId);
+            await processStatement(uploadId);
+            toast.success("Statement analyzed successfully.");
+            await loadUploads();
+        } catch {
+            console.error("Failed to process statement");
+            toast.error("Unable to analyze this statement. Please try again.");
+        } finally {
+            setProcessingId(null);
+        }
     }
     return (
         <div className="border rounded-2xl bg-card overflow-hidden">
@@ -179,7 +200,14 @@ export default function StatementHistory() {
 
             </div>
 
-            {uploads.length === 0 ? (
+            {error ? (
+                <div className="p-8 text-center">
+                    <p className="text-sm text-muted-foreground">{error}</p>
+                    <Button className="mt-4" variant="outline" onClick={loadUploads}>
+                        Try again
+                    </Button>
+                </div>
+            ) : uploads.length === 0 ? (
                 <div className="p-12 text-center">
                     <div
                         className="
@@ -253,11 +281,12 @@ export default function StatementHistory() {
                             {/* Clickable statement area */}
 
                             <button
-                                onClick={() =>
-                                    router.push(
-                                        `/dashboard/insights/${upload.id}`
-                                    )
-                                }
+                                onClick={() => {
+                                    if (upload.transaction_count > 0) {
+                                        router.push(`/dashboard/insights/${upload.id}`);
+                                    }
+                                }}
+                                disabled={upload.transaction_count === 0}
                                 className="
                                     flex
                                     flex-1
@@ -265,6 +294,7 @@ export default function StatementHistory() {
                                     items-center
                                     justify-between
                                     text-left
+                                    disabled:cursor-default
                                 "
                             >
 
@@ -388,6 +418,16 @@ export default function StatementHistory() {
                                 />
 
                             </button>
+
+                            {upload.transaction_count === 0 && (
+                                <Button
+                                    size="sm"
+                                    onClick={() => handleRetry(upload.id)}
+                                    disabled={processingId === upload.id || deletingId === upload.id}
+                                >
+                                    {processingId === upload.id ? "Analyzing..." : "Analyze"}
+                                </Button>
+                            )}
 
 
                             {/* Delete */}

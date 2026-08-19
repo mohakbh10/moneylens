@@ -9,6 +9,7 @@ import {
 import { getBudgets } from "@/lib/api";
 import BudgetCard from "./BudgetCard";
 import BudgetForm from "./BudgetForm";
+import { toast } from "sonner";
 
 type Transaction = {
     id: string;
@@ -49,7 +50,7 @@ export default function BudgetPlanner({
                 .map((transaction) =>
                     transaction.transaction_date.slice(0, 7)
                 )
-                .sort()[0]}-01`
+                .sort()[0]}`
         : null;
 
     const monthLabel =
@@ -91,6 +92,7 @@ export default function BudgetPlanner({
             } catch {
 
                 console.error("Failed to fetch budgets");
+                toast.error("Unable to load budgets. Please try again.");
 
             } finally {
 

@@ -1,7 +1,7 @@
 from dependencies.upload_access import (
     verify_upload_access,
 )
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from uuid import UUID
 
 from services.supabase_service import (
@@ -100,15 +100,22 @@ def delete_statement_route(
         user_id,
     )
 
-    if upload.get("file_url"):
+    try:
+        if upload.get("file_url"):
+            delete_statement_file(
+                upload["file_url"]
+            )
 
-        delete_statement_file(
-            upload["file_url"]
+        delete_statement(
+            str(upload_id)
         )
-
-    delete_statement(
-        str(upload_id)
-    )
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to delete statement. Please try again.",
+        ) from error
 
     return {
         "success": True

@@ -56,7 +56,7 @@ export default function AskAI({
 
     async function handleAsk() {
 
-        if (!question.trim()) return;
+        if (loading || !question.trim()) return;
 
         const currentQuestion = question;
 
@@ -190,7 +190,8 @@ export default function AskAI({
 
                         if (
                             e.key === "Enter" &&
-                            !e.shiftKey
+                            !e.shiftKey &&
+                            !loading
                         ) {
                             e.preventDefault();
                             handleAsk();
@@ -198,6 +199,8 @@ export default function AskAI({
 
                     }}
                     placeholder="Ask MoneyLens AI..."
+                    maxLength={300}
+                    disabled={loading}
                     className="
                         flex-1
                         min-w-0

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   IndianRupee,
@@ -29,6 +29,7 @@ import AIRecommendationCard from "@/components/dashboard/AIRecommendationCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import FadeIn from "@/components/animations/FadeIn";
 import TransactionTable from "@/components/dashboard/TransactionTable";
+import { Button } from "@/components/ui/button";
 
 type Insight = {
   total_income: number;
@@ -55,11 +56,14 @@ export default function InsightsPage() {
   const [insight, setInsight] = useState<Insight | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [summary, setSummary] = useState("");
   const [recommendations, setRecommendations] = useState("");
 
-  useEffect(() => {
-    const load = async () => {
+  const load = useCallback(async () => {
+      if (!id) return;
+      setLoading(true);
+      setError("");
       try {
         const [insightData, transactionData] = await Promise.all([
           getInsights(id as string),
@@ -69,12 +73,15 @@ export default function InsightsPage() {
         setTransactions(transactionData);
       } catch {
         console.error("Failed to load statement insights");
+        setError("Unable to load this statement. It may no longer exist or you may not have access.");
       } finally {
         setLoading(false);
       }
-    };
-    if (id) load();
   }, [id]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   useEffect(() => {
     if (!id) return;
@@ -119,6 +126,16 @@ export default function InsightsPage() {
         <Skeleton className="h-72 rounded-2xl" />
         <Skeleton className="h-56 rounded-2xl" />
         <Skeleton className="h-96 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <h2 className="text-2xl font-semibold">Unable to load statement</h2>
+        <p className="mt-2 text-muted-foreground">{error}</p>
+        <Button className="mt-5" onClick={load}>Try again</Button>
       </div>
     );
   }

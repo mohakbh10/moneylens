@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { saveBudget } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type Props = {
     month: string | null;
@@ -42,6 +43,7 @@ export default function BudgetForm({
             !numericAmount ||
             numericAmount <= 0
         ) {
+            toast.error("Enter a budget amount greater than zero.");
             return;
         }
 
@@ -73,9 +75,11 @@ export default function BudgetForm({
             setAmount("");
             // Refresh budget cards.
             await onBudgetSaved();
+            toast.success("Budget saved.");
 
         } catch {
             console.error("Failed to save budget");
+            toast.error("Unable to save budget. Please try again.");
 
         } finally {
             setSaving(false);
