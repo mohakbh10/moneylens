@@ -59,12 +59,9 @@ export default function StatementHistory() {
                 setUploads(data);
 
             }
-            catch (error) {
+            catch {
 
-                console.error(
-                    "Failed to load statement history:",
-                    error
-                );
+                console.error("Failed to load statement history");
 
             }
             finally {
@@ -155,12 +152,9 @@ export default function StatementHistory() {
             );
 
         }
-        catch (error) {
+        catch {
 
-            console.error(
-                "Delete statement error:",
-                error
-            );
+            console.error("Failed to delete statement");
 
         }
         finally {

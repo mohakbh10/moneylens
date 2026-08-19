@@ -95,9 +95,9 @@ export default function AskAI({
                 },
             ]);
 
-        } catch (error) {
+        } catch {
 
-            console.error(error);
+            console.error("AI chat request failed");
 
             setMessages((prev) => [
                 ...prev,

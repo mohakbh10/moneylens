@@ -24,8 +24,6 @@ def extract_statement(
     upload = get_upload_by_id(
         request.upload_id
     )
-    print(upload)
-
     if not upload:
         return {
             "success": False,

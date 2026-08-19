@@ -67,8 +67,8 @@ export default function InsightsPage() {
         ]);
         setInsight(insightData);
         setTransactions(transactionData);
-      } catch (error) {
-        console.error(error);
+      } catch {
+        console.error("Failed to load statement insights");
       } finally {
         setLoading(false);
       }
@@ -86,8 +86,8 @@ export default function InsightsPage() {
         ]);
         setSummary(summaryData.summary);
         setRecommendations(recommendationData.recommendations);
-      } catch (error) {
-        console.error("AI summary error:", error);
+      } catch {
+        console.error("Failed to load AI content");
       }
     };
     loadAIContent();

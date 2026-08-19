@@ -74,11 +74,8 @@ export default function BudgetForm({
             // Refresh budget cards.
             await onBudgetSaved();
 
-        } catch (error) {
-            console.error(
-                "Budget save error:",
-                error
-            );
+        } catch {
+            console.error("Failed to save budget");
 
         } finally {
             setSaving(false);

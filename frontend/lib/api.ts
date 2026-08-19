@@ -31,13 +31,9 @@ export async function getUploads() {
 
     if (!response.ok) {
 
-        const errorText =
-            await response.text();
-
         console.error(
             "Uploads API error:",
-            response.status,
-            errorText
+            response.status
         );
 
         throw new Error(

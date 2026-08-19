@@ -39,8 +39,8 @@ export default function DashboardPage() {
           const insight = await getInsights(latest.id);
           setLatestInsight(insight);
         }
-      } catch (error) {
-        console.error("Dashboard load error:", error);
+      } catch {
+        console.error("Failed to load dashboard");
       } finally {
         setLoading(false);
       }

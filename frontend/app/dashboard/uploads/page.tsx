@@ -57,7 +57,7 @@ export default function UploadsPage() {
 
         if (uploadError) {
 
-            console.error(uploadError);
+            console.error("Statement upload failed");
 
             toast.error(uploadError.message);
 
@@ -84,7 +84,7 @@ export default function UploadsPage() {
 
         if (dbError) {
 
-            console.error(dbError);
+            console.error("Failed to save statement metadata");
 
             toast.error(dbError.message);
 
@@ -127,9 +127,9 @@ export default function UploadsPage() {
                 `/dashboard/insights/${upload.id}`
             );
 
-        } catch (error) {
+        } catch {
 
-            console.error(error);
+            console.error("Statement processing failed");
 
             toast.error(
                 "Unable to analyze your statement. Please try again."

@@ -20,9 +20,8 @@ export async function POST(req: NextRequest) {
         // Return a success response along with whatever data you need (e.g., text or a blob)
         return NextResponse.json({ success: true, message: "File fetched successfully" });
 
-    } catch (error) {
-        // Log the error securely on your server console
-        console.error("Extraction error:", error);
+    } catch {
+        console.error("Extraction request failed");
 
         // Return an error response to the frontend client
         return NextResponse.json(

@@ -1,8 +1,4 @@
 import json
-from urllib import response
-from dotenv import load_dotenv
-import os
-import json
 from services.gemini_client import client, MODEL
 
 def extract_transactions(raw_text: str):
@@ -68,8 +64,6 @@ Statement:
     if cleaned.endswith("```"):
         cleaned = cleaned[:-3]
 
-    print(response.text)
-
     return json.loads(
         cleaned.strip()
     )
@@ -124,8 +118,6 @@ Transactions:
 
     if cleaned.endswith("```"):
         cleaned = cleaned[:-3]
-
-    print(response.text)
 
     return json.loads(
         cleaned.strip()

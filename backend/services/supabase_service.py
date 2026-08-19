@@ -97,17 +97,6 @@ def download_pdf(file_path: str):
 
     return response
 
-"""
-def download_pdf(file_path: str):
-    response = (
-        supabase
-        .storage
-        .from_("bank-statements")
-        .download(file_path)
-    )
-
-    return response #returns bytes of the file to extract_text function
-"""
 def get_raw_text(upload_id: str)-> str:
 
     response = (

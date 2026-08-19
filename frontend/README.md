@@ -289,13 +289,16 @@ Dashboard + AI Assistant
 | Method | Endpoint | Description |
 |---------|----------|-------------|
 | POST | `/process-statement` | Runs the complete statement processing pipeline |
-| GET | `/uploads` | Retrieve uploaded statements |
+| GET | `/uploads` | Retrieve the current user's uploaded statements |
 | GET | `/transactions/{upload_id}` | Retrieve extracted transactions |
 | GET | `/insights/{upload_id}` | Retrieve generated financial insights |
-| POST | `/generate-summary` | Generate AI financial summary |
+| POST | `/ai-summary` | Generate or retrieve an AI financial summary |
+| POST | `/ai-recommendations` | Generate or retrieve AI spending recommendations |
 | POST | `/ask-ai` | Chat with your financial data |
 | GET | `/budgets` | Retrieve monthly budgets |
 | POST | `/budgets` | Create or update budgets |
+| GET | `/statement-history` | Retrieve the current user's statement history |
+| DELETE | `/statements/{upload_id}` | Delete a statement and its associated analysis |
 
 ---
 

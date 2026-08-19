@@ -43,14 +43,7 @@ def get_current_user(
 
         raise
 
-    except Exception as error:
-
-        print(
-            "AUTH ERROR:",
-            type(error).__name__,
-            str(error),
-        )
-
+    except Exception:
         raise HTTPException(
             status_code=401,
             detail="Unauthorized",

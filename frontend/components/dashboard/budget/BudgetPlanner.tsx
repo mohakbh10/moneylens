@@ -88,12 +88,9 @@ export default function BudgetPlanner({
                     data ?? []
                 );
 
-            } catch (error) {
+            } catch {
 
-                console.error(
-                    "Fetch budgets error:",
-                    error
-                );
+                console.error("Failed to fetch budgets");
 
             } finally {
 
